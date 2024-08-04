@@ -16,14 +16,20 @@ def initialize_driver():
     return driver
 
 
-def get_url():
-    url = (
-        f'https://www.cq.gov.cn/cqgovsearch/search.html?searchWord={policy}&tenantId=7&configTenantId=7&dataTypeId=10'
-        f'&sign=d8c59723-1595-4f7c-a3e1-1ba32c274682&pageSize=10&seniorBox=0&advancedFilters=&isAdvancedSearch=0'
-    )
+def get_url(page):
+    url = (f"https://www.gansu.gov.cn/guestweb4/s?searchWord={policy}"
+           f"&column=%25E6%2594%25BF%25E5%258A%25A1%25E5%2585%25AC%25E5%25BC%2580&wordPlace=1&orderBy=0&startTime="
+           f"&endTime=&pageSize=10&pageNum={page-1}&timeStamp=0&siteCode=6200000001&sonSiteCode=&checkHandle=1&strFileType="
+           f"&govWorkBean=%257B%257D&sonSiteCode=&areaSearchFlag=-1&secondSearchWords=&topical=&pubName=&countKey=0"
+           f"&uc=0&isSonSite=false&left_right_index=0")
     driver = initialize_driver()
     driver.get(url)
     time.sleep(5)
+
+    lable = driver.find_elements_by_css_selector('.position-con.item-choose')
+    js = 'arguments[0].setAttribute(arguments[1], arguments[2])'
+    driver.execute_script(js, lable[0], 'class', 'position-con item-choose')
+    driver.execute_script(js, lable[1], 'class', 'position-con item-choose item-choose-on')
 
     process_data = []
     page = count = 1
@@ -34,7 +40,7 @@ def get_url():
 
         print(f'开始爬取第{count}页链接')
         count += 1
-        poli = driver.find_elements_by_class_name('item.is-policy')
+        poli = driver.find_elements_by_class_name('search-result')
 
         for elements in poli:
             record = {
@@ -46,13 +52,33 @@ def get_url():
                 'createDate': '',  # 发文时间
                 'content': ''  # 文章内容
             }
+
+            table = elements.find_elements_by_class_name("row-content")
+            while len(table) < 4:
+                table.insert(0, "")
+
+            for index, item in enumerate(table):
+                if isinstance(item, str):
+                    text = item
+                else:
+                    text = item.text
+
+                if index == 0:
+                    record['fileNum'] = text
+                elif index == 1:
+                    record['columnName'] = text
+                elif index == 2:
+                    record['classNames'] = text
+                elif index == 3:
+                    record['createDate'] = text
+
             process_data.append(record)
 
         try:
-            driver.find_element_by_css_selector('.layui-laypage-next.layui-disabled')
+            driver.find_element_by_css_selector('.next.disabled')
             break
         except:
-            page = driver.find_element_by_class_name('layui-laypage-next')
+            page = driver.find_element_by_class_name('next')
 
     driver.quit()
     print('链接爬取完成')
@@ -76,14 +102,11 @@ def get_content(data_process):
         count = 0
         for item in data_process:
             if retry_get(item['link']):
+                xpath = "//*[@id='mainText']"
                 try:
-                    item['content'] = driver.find_element_by_xpath("//*[contains(@class, 'TRS_UEDITOR trs_paper_default')]").text
-                    item['classNames'] = driver.find_element_by_xpath("//*[contains(@class, 'li-hy')]").text
-                    item['columnName'] = driver.find_element_by_xpath("//*[contains(@class, 'li-dw')]").text
-                    item['createDate'] = driver.find_element_by_xpath("//*[contains(@class, 'li-sj')]").text
-                    item['fileNum'] = driver.find_element_by_xpath("//*[contains(@class, 'li-zh')]").text
+                    item['content'] = driver.find_element_by_xpath(xpath).text
                 except NoSuchElementException:
-                    item['content'] = item['classNames'] = item['columnName'] = item['createDate'] = item['fileNum'] = '获取内容失败'
+                    item['content'] = '获取内容失败'
             else:
                 print(f"跳过无法访问的链接: {item['link']}")
                 item['content'] = "无法访问页面"
@@ -101,11 +124,11 @@ def get_content(data_process):
 
 def main():
     data_process, total = get_url()
-    print(f"重庆共计{total}篇文章")
+    print(f"北京共计{total}篇文章")
     data = get_content(data_process)
-    mysql_writer('chongqing_wj', data)
+    #mysql_writer('beijing_wj', data)
 
 
 if __name__ == "__main__":
-    policy = quote("营商环境")
+    policy = ''.join(['%25' + c if c == '%' else c for c in quote('营商环境', encoding='utf-8')])
     main()

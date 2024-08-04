@@ -1,0 +1,125 @@
+import math
+import re
+from urllib.parse import quote
+from selenium import webdriver
+import time
+from selenium.common.exceptions import NoSuchElementException
+from writer import mysql_writer
+
+
+def initialize_driver():
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    driver = webdriver.Chrome(
+        executable_path=r'C:\Program Files\Google\Chrome\Application\chromedriver.exe',
+        options=options)
+    return driver
+
+
+def get_url():
+    url = f'https://www.fujian.gov.cn/zwgk/zcwjk/main.htm?keyWord={policy}'
+    driver = initialize_driver()
+    driver.get(url)
+    time.sleep(5)
+
+    element = driver.find_element_by_css_selector('[barrier-free-idx="312"]')
+    driver.execute_script("arguments[0].click();", element)
+    time.sleep(2)
+
+    total = driver.find_element_by_xpath("//span[@class='show']//em").text
+    process_data = []
+    page_count = math.ceil(int(total)/10)
+    k = page_count+2 if page_count < 7 else 9
+    page = driver.find_element_by_xpath(f'/html/body/div/div[4]/div/div/div[3]/div[2]/div/div[13]/div/div[1]/a[{k}]')
+
+    for count in range(1, page_count+1):
+        print(f'开始爬取第{count}页链接')
+        poli = driver.find_elements_by_class_name('wjk-item')
+
+        for elements in poli:
+            line = elements.find_element_by_class_name('jsq').find_elements_by_tag_name('a')
+
+            if len(line) == 3:
+                line1 = line[0].get_attribute('title')
+                line2 = line[1].get_attribute('title')
+            elif len(line) == 2:
+                if bool(re.search(r'\d', line[0].get_attribute('title'))):
+                    line1 = ''
+                    line2 = line[0].get_attribute('title')
+                else:
+                    line1 = line[0].get_attribute('title')
+                    line2 = ''
+            else:
+                line1 = line2 = ''
+
+            record = {
+                'link': elements.find_element_by_tag_name('a').get_attribute('href'),  # 链接
+                'title': elements.find_element_by_tag_name('a').get_attribute('title'),  # 标题
+                'fileNum': line2,  # 发文字号
+                'columnName': line1,  # 发文机构
+                'classNames': '',  # 主题分类
+                'createDate': line[-1].text,  # 发文时间
+                'content': ''  # 文章内容
+            }
+
+            process_data.append(record)
+
+        driver.execute_script("arguments[0].click();", page)
+        time.sleep(2)
+
+    driver.quit()
+    print('链接爬取完成')
+    return process_data, len(process_data)
+
+
+def get_content(data_process):
+    driver = initialize_driver()
+
+    def retry_get(url):
+        for attempt in range(3):
+            try:
+                driver.get(url)
+                return True
+            except Exception as e:
+                print(f'第{attempt + 1}次访问链接失败: {url}')
+                time.sleep(2)
+        return False
+
+    try:
+        count = 0
+        for item in data_process:
+            if retry_get(item['link']):
+                xpath = "//*[@class='TRS_Editor']"
+                print(item['link'])
+                try:
+                    item['content'] = driver.find_element_by_xpath(xpath).text
+                except NoSuchElementException:
+                    item['content'] = item['fileNum'] = '获取内容失败'
+            else:
+                print(f"跳过无法访问的链接: {item['link']}")
+                item['content'] = '无法访问页面'
+
+            count += 1
+            if count % 20 == 0:
+                driver.quit()
+                print(f'爬取第{count}篇文章')
+                driver = initialize_driver()
+
+    finally:
+        driver.quit()
+    return data_process
+
+
+def main():
+    data_process, total = get_url()
+    print(data_process)
+    print(f'福建共计{total}篇文章')
+    #data = get_content(data_process)
+    #mysql_writer('fujian_wj', data)
+
+
+if __name__ == "__main__":
+    policy = quote('营商环境')
+    main()
