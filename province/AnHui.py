@@ -102,7 +102,7 @@ def main():
     for page in range(1, page_count + 1):
         print(f'爬取第{page}页')
         data = get_content(page)
-        mysql_writer('anhui_wj', data)
+        #mysql_writer('anhui_wj', data)
 
 
 if __name__ == "__main__":

@@ -92,7 +92,6 @@ def get_content(data_process):
         for item in data_process:
             if retry_get(item['link']):
                 xpath = "//*[@class='TRS_Editor']"
-                print(item['link'])
                 try:
                     item['content'] = driver.find_element_by_xpath(xpath).text
                 except NoSuchElementException:
@@ -114,9 +113,8 @@ def get_content(data_process):
 
 def main():
     data_process, total = get_url()
-    print(data_process)
     print(f'福建共计{total}篇文章')
-    #data = get_content(data_process)
+    data = get_content(data_process)
     #mysql_writer('fujian_wj', data)
 
 
