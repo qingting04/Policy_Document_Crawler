@@ -5,6 +5,8 @@ from urllib.parse import quote
 from selenium import webdriver
 import requests
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 from writer import mysql_writer
 
 
@@ -51,14 +53,19 @@ def process_data(page):
     return processed_data
 
 
-def get_content(page):
+def initialize_driver():
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(
-        executable_path=r'C:\Program Files\Google\Chrome\Application\chromedriver.exe',
+        service=Service(r'C:\Program Files\Google\Chrome\Application\chromedriver.exe'),
         options=options)
+    return driver
+
+
+def get_content(page):
+    driver = initialize_driver()
     data_process = process_data(page)
 
     def retry_get(url):
@@ -76,7 +83,7 @@ def get_content(page):
             if retry_get(item['link']):
                 xpath = "//*[@id='UCAP-CONTENT']"
                 try:
-                    item['content'] = driver.find_element_by_xpath(xpath).text
+                    item['content'] = driver.find_element(By.XPATH, xpath).text
                 except NoSuchElementException:
                     item['content'] = '获取内容失败'
             else:
@@ -94,8 +101,7 @@ def main():
     for page in range(1, page_count + 1):
         print(f'爬取第{page}页')
         data = get_content(page)
-        print(data)
-        mysql_writer('guowuyuan_wj', data)
+        #mysql_writer('guowuyuan_wj', data)
 
 
 if __name__ == "__main__":

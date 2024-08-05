@@ -5,6 +5,8 @@ from selenium import webdriver
 from urllib.parse import quote
 from writer import mysql_writer
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 
 
 def fetch_policy_data(page):
@@ -47,27 +49,20 @@ def get_pageandtotal(page):
     return page_count, total
 
 
-def get_content(page):
+def initialize_driver():
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(
-        executable_path=r'C:\Program Files\Google\Chrome\Application\chromedriver.exe',
+        service=Service(r'C:\Program Files\Google\Chrome\Application\chromedriver.exe'),
         options=options)
-    data_process = process_data(page)
+    return driver
 
-    '''def content(platformcode):
-        table = {
-            "anhui_szf": "//*[contains(@class, 'j-fontContent') or contains(@class, 'gzk-article')]",
-            "anhui_szbm_1": "//*[contains(@class, 'j-fontContent') or contains(@class, 'gzk-article') or contains(@class, 'art_p leftW')]",
-            #"anhui_szbm_2": "//*[@id='UCAP-CONTENT']",
-            "anhui_szbm_3": "//*[contains(@class, 'j-fontContent') or contains(@class, 'gzk-article')]",
-            "anhui_szbm_4": "//*[contains(@class, 'j-fontContent') or contains(@class, 'gzk-article') or contains(@id, 'UCAP-CONTENT') or contains(@class, 'con_font')]",
-            "anhui_szbm_5": "//*[contains(@class, 'j-fontContent') or contains(@id, 'UCAP-CONTENT') or contains(@class, 'gzk-article')]",
-            "anhui_szbm_6": "//*[contains(@class, 'j-fontContent') or contains(@class, 'gzk-article')]"
-        }
-        return table.get(platformcode)'''
+
+def get_content(page):
+    driver = initialize_driver()
+    data_process = process_data(page)
 
     def retry_get(url):
         for attempt in range(3):
@@ -84,7 +79,7 @@ def get_content(page):
             if retry_get(item['link']):
                 xpath = "//*[contains(@class, 'j-fontContent') or contains(@class, 'gzk-article') or contains(@class, 'art_p leftW' or contains(@id, 'UCAP-CONTENT') or contains(@class, 'con_font') or contains(@id, 'UCAP-CONTENT')]"
                 try:
-                    item['content'] = driver.find_element_by_xpath(xpath).text
+                    item['content'] = driver.find_element(By.XPATH, xpath).text
                 except NoSuchElementException:
                     item['content'] = '获取内容失败'
             else:

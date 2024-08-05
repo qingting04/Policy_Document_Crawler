@@ -1,7 +1,11 @@
+from unittest.mock import MagicMock
 from urllib.parse import quote
 from selenium import webdriver
 import time
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 from writer import mysql_writer
 
 
@@ -11,7 +15,7 @@ def initialize_driver():
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(
-        executable_path=r'C:\Program Files\Google\Chrome\Application\chromedriver.exe',
+        service=Service(r'C:\Program Files\Google\Chrome\Application\chromedriver.exe'),
         options=options)
     return driver
 
@@ -22,7 +26,7 @@ def get_url():
     driver.get(url)
     time.sleep(5)
 
-    lable = driver.find_elements_by_css_selector('.position-con.item-choose')
+    lable = driver.find_element(By.CSS_SELECTOR, '.position-con.item-choose')
     js = 'arguments[0].setAttribute(arguments[1], arguments[2])'
     driver.execute_script(js, lable[0], 'class', 'position-con item-choose')
     driver.execute_script(js, lable[1], 'class', 'position-con item-choose item-choose-on')
@@ -36,12 +40,12 @@ def get_url():
 
         print(f'开始爬取第{count}页链接')
         count += 1
-        poli = driver.find_elements_by_class_name('search-result')
+        poli = driver.find_elements(By.CLASS_NAME, 'search-result')
 
         for elements in poli:
             record = {
-                'link': elements.find_element_by_tag_name("a").get_attribute('href'),  # 链接
-                'title': elements.find_element_by_tag_name("a").text,  # 标题
+                'link': elements.find_element(By.TAG_NAME, "a").get_attribute('href'),  # 链接
+                'title': elements.find_element(By.TAG_NAME, "a").text,  # 标题
                 'fileNum': '',  # 发文字号
                 'columnName': '',  # 发文机构
                 'classNames': '',  # 主题分类
@@ -49,32 +53,29 @@ def get_url():
                 'content': ''  # 文章内容
             }
 
-            table = elements.find_elements_by_class_name("row-content")
+            table = elements.find_elements(By.CLASS_NAME, "row-content")
             while len(table) < 4:
-                table.insert(0, "")
+                mock_element = MagicMock(spec=WebElement)
+                mock_element.text = ''
+                table.insert(0, mock_element)
 
             for index, item in enumerate(table):
-                if isinstance(item, str):
-                    text = item
-                else:
-                    text = item.text
-
                 if index == 0:
-                    record['fileNum'] = text
+                    record['fileNum'] = item.text
                 elif index == 1:
-                    record['columnName'] = text
+                    record['columnName'] = item.text
                 elif index == 2:
-                    record['classNames'] = text
+                    record['classNames'] = item.text
                 elif index == 3:
-                    record['createDate'] = text
+                    record['createDate'] = item.text
 
             process_data.append(record)
 
         try:
-            driver.find_element_by_css_selector('.next.disabled')
+            driver.find_element(By.CSS_SELECTOR, '.next.disabled')
             break
         except:
-            page = driver.find_element_by_class_name('next')
+            page = driver.find_element(By.CLASS_NAME, 'next')
 
     driver.quit()
     print('链接爬取完成')
@@ -100,7 +101,7 @@ def get_content(data_process):
             if retry_get(item['link']):
                 xpath = "//*[@id='mainText']"
                 try:
-                    item['content'] = driver.find_element_by_xpath(xpath).text
+                    item['content'] = driver.find_element(By.XPATH, xpath).text
                 except NoSuchElementException:
                     item['content'] = '获取内容失败'
             else:
