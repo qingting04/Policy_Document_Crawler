@@ -1,10 +1,9 @@
 from urllib.parse import quote
-from selenium import webdriver
-import time
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 import undetected_chromedriver as uc
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from writer import mysql_writer
 
 
@@ -17,7 +16,7 @@ def initialize_undetected_driver():
     return driver
 
 
-def get_url():
+def get_url(policy):
     url = (f"https://www.gansu.gov.cn/guestweb4/s?searchWord={policy}"
            f"&column=%25E6%2594%25BF%25E5%258A%25A1%25E5%2585%25AC%25E5%25BC%2580&wordPlace=1&orderBy=0&startTime="
            f"&endTime=&pageSize=10&pageNum=0&timeStamp=0&siteCode=6200000001&sonSiteCode=&checkHandle=1&strFileType="
@@ -25,14 +24,15 @@ def get_url():
            f"&uc=0&isSonSite=false&left_right_index=0")
     driver = initialize_undetected_driver()
     driver.get(url)
-    time.sleep(5)
+    wait = WebDriverWait(driver, 5)
+    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'leftSide-layer.fl')))
 
     process_data = []
     page = count = 1
     while page:
         if page != 1:
             page.click()
-            time.sleep(1)
+            wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'leftSide-layer.fl')))
 
         print(f'开始爬取第{count}页链接')
         count += 1
@@ -56,7 +56,7 @@ def get_url():
             process_data.append(record)
 
         try:
-            driver.find_element(By.CSS_SELECTOR, '.next.disabled')
+            driver.find_element(By.CLASS_NAME, 'next.disabled')
             break
         except:
             page = driver.find_element(By.CLASS_NAME, 'next')
@@ -68,15 +68,17 @@ def get_url():
 
 def get_content(data_process):
     driver = initialize_undetected_driver()
+    print('开始爬取文章')
 
     def retry_get(url):
         for attempt in range(3):
             try:
                 driver.get(url)
+                wait = WebDriverWait(driver, 2)
+                wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'detailContent')))
                 return True
-            except Exception as e:
+            except TimeoutException as e:
                 print(f"第{attempt + 1}次访问链接失败: {url}")
-                time.sleep(2)
         return False
 
     try:
@@ -92,23 +94,24 @@ def get_content(data_process):
                 item['content'] = "无法访问页面"
 
             count += 1
-            if count % 20 == 0:
+            print(f'爬取第{count}篇文章')
+            if count % 50 == 0:
                 driver.quit()
-                print(f'爬取第{count}篇文章')
                 driver = initialize_undetected_driver()
 
     finally:
         driver.quit()
+        print('文章爬取完成')
     return data_process
 
 
-def main():
-    data_process, total = get_url()
+def main(un_policy):
+    policy = quote(un_policy).replace('%', '%25')
+    data_process, total = get_url(policy)
     print(f"甘肃共计{total}篇文章")
     data = get_content(data_process)
     #mysql_writer('gansu_wj', data)
 
 
 if __name__ == "__main__":
-    policy = ''.join(['%25%' + c if c == '%' else c for c in quote('营商环境', encoding='utf-8')])
-    main()
+    main('营商环境')

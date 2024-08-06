@@ -2,10 +2,11 @@ import math
 import re
 from urllib.parse import quote
 from selenium import webdriver
-import time
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from writer import mysql_writer
 
 
@@ -24,11 +25,12 @@ def get_url(policy):
     url = f'https://www.fujian.gov.cn/zwgk/zcwjk/main.htm?keyWord={policy}'
     driver = initialize_driver()
     driver.get(url)
-    time.sleep(5)
+    wait = WebDriverWait(driver, 5)
+    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'pad-l')))
 
     element = driver.find_element(By.CSS_SELECTOR, '[barrier-free-idx="312"]')
     driver.execute_script("arguments[0].click();", element)
-    time.sleep(2)
+    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'pad-l')))
 
     total = driver.find_element(By.XPATH, "//span[@class='show']//em").text
     process_data = []
@@ -69,7 +71,7 @@ def get_url(policy):
             process_data.append(record)
 
         driver.execute_script("arguments[0].click();", page)
-        time.sleep(2)
+        wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'pad-l')))
 
     driver.quit()
     print('链接爬取完成')
@@ -78,15 +80,17 @@ def get_url(policy):
 
 def get_content(data_process):
     driver = initialize_driver()
+    print('开始爬取文章')
 
     def retry_get(url):
         for attempt in range(3):
             try:
                 driver.get(url)
+                wait = WebDriverWait(driver, 2)
+                wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'TRS_Editor')))
                 return True
-            except Exception as e:
-                print(f'第{attempt + 1}次访问链接失败: {url}')
-                time.sleep(2)
+            except TimeoutException as e:
+                print(f"第{attempt + 1}次访问链接失败: {url}")
         return False
 
     try:
@@ -102,14 +106,14 @@ def get_content(data_process):
                 item['content'] = '无法访问页面'
 
             count += 1
-            if count % 20 == 0:
+            print(f'爬取第{count}篇文章')
+            if count % 50 == 0:
                 driver.quit()
-                print(f'爬取第{count}篇文章')
                 driver = initialize_driver()
 
     finally:
         driver.quit()
-        print('文章全部爬取完成')
+        print('文章爬取完成')
     return data_process
 
 

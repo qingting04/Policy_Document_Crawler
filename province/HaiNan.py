@@ -1,28 +1,24 @@
-import time
-import requests
+import math
 import re
-from selenium import webdriver
+import time
 from urllib.parse import quote
-from writer import mysql_writer
-from selenium.common.exceptions import NoSuchElementException
+from selenium import webdriver
+import requests
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from writer import mysql_writer
 
 
 def fetch_policy_data(policy, page):
     data_unprocess = []
 
-    for page_count in range(1, page + 1):
+    for page_count in range(1, page+1):
         cur_url = (
-            f"https://www.ah.gov.cn/anhuisousuoserver/site/label/8888?_=0.45163228543990175&labelName=searchDataList"
-            f"&isJson=true&isForPage=true&target=&pageSize=20&titleLength=35&contentLength=90&showType=2"
-            f"&ssqdDetailTpl=35931&islight=true&columnId=&keywords={policy}&subkeywords=&typeCode=public_content"
-            f"&isAllSite=true&platformCode=&siteId=&fromCode=title&fuzzySearch=true&attachmentType=&datecode="
-            f"&sort=intelligent&colloquial=true&orderType=0&minScore=&fileNum=&publishDepartment=&pageIndex={page_count}"
-            f"&isDate=true&dateFormat=yyyy-MM-dd&isPolicy=1&hasRelInfo=true"
+            f'https://search.i0898.com/hisearch/list/?size=10&sort=&keyword={policy}&page={page}&field=title'
+            f'&excludefield=&excludeKeyword=&department=&lawtype=&subject=&daterange=&filetype=&tsfl=&year='
         )
         response = requests.get(cur_url)
         data_unprocess.append(response.json())
@@ -32,30 +28,29 @@ def fetch_policy_data(policy, page):
     return data_unprocess
 
 
+def get_pageandtotal(page_total_data):
+    total = page_total_data['data']['total']
+    return math.ceil(total/10), total
+
+
 def process_data(unprocess_data):
     processed_data = []
     print('处理js数据')
     for un_data in unprocess_data:
         for item in un_data['data']['data']:
-            line = str(item.get('columnName', '')).split('>')
             processed_item = {
-                'link': item.get('link', ''),
+                'link': item.get('url', ''),
                 'title': re.sub('<[^<]+?>', '', item.get('title', '')),
-                'fileNum': item.get('fileNum', ''),
-                'columnName': line[0],
-                'classNames': item.get('classNames', ''),
-                'createDate': item.get('createDate', ''),
+                'fileNum': item.get('number', ''),
+                'columnName': item.get('website', ''),
+                'classNames': item.get('subject', ''),
+                'createDate': item.get('pubtime', ''),
                 'content': ''
             }
             processed_data.append(processed_item)
+
     print('js数据处理完成')
     return processed_data
-
-
-def get_pageandtotal(page_total_data):
-    page = page_total_data['data']['pageCount']
-    total = page_total_data['data']['total']
-    return page, total
 
 
 def initialize_driver():
@@ -72,6 +67,9 @@ def initialize_driver():
 def get_content(data_process):
     driver = initialize_driver()
     print('开始爬取文章')
+    xpath = ("//*[contains(@class, 'TRS_UEDITOR trs_paper_default') or "
+             "contains(@class, 'con_cen line mar-t2') or "
+             "contains(@class, 'font')]")
 
     def retry_get(url):
         for attempt in range(3):
@@ -86,12 +84,6 @@ def get_content(data_process):
 
     try:
         count = 0
-        xpath = ("//*[contains(@class, 'j-fontContent') or "
-                 "contains(@class, 'gzk-article') or "
-                 "contains(@class, 'art_p leftW') or "
-                 "contains(@id, 'UCAP-CONTENT') or "
-                 "contains(@class, 'con_font')]")
-
         for item in data_process:
             if retry_get(item['link']):
                 try:
@@ -101,7 +93,6 @@ def get_content(data_process):
             else:
                 print(f"跳过无法访问的链接: {item['link']}")
                 item['content'] = "无法访问页面"
-
             count += 1
             print(f'爬取第{count}篇文章')
             if count % 50 == 0:
@@ -109,7 +100,7 @@ def get_content(data_process):
                 driver = initialize_driver()
 
     finally:
-        print('爬取文章完成')
+        print('文章爬取完成')
         driver.quit()
 
     return data_process
@@ -119,11 +110,11 @@ def main(un_policy):
     policy = quote(un_policy)
     page_total_data = fetch_policy_data(policy, 1)[0]
     page, total = get_pageandtotal(page_total_data)
-    print(f"安徽文章共计{page}页，{total}篇文章")
+    print(f"海南文章共计{page}页，{total}篇文章")
     unprocess_data = fetch_policy_data(policy, page)
     data_process = process_data(unprocess_data)
     data = get_content(data_process)
-    #mysql_writer('anhui_wj', data)
+    #mysql_writer('hainan_wj', data)
 
 
 if __name__ == "__main__":

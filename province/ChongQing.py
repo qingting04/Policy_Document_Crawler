@@ -1,9 +1,11 @@
 from urllib.parse import quote
 from selenium import webdriver
 import time
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from writer import mysql_writer
 
 
@@ -25,14 +27,15 @@ def get_url(policy):
     )
     driver = initialize_driver()
     driver.get(url)
-    time.sleep(5)
+    wait = WebDriverWait(driver, 5)
+    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'basic_result_content')))
 
     process_data = []
     page = count = 1
     while page:
         if page != 1:
             page.click()
-            time.sleep(1)
+            wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'basic_result_content')))
 
         print(f'开始爬取第{count}页链接')
         count += 1
@@ -63,15 +66,17 @@ def get_url(policy):
 
 def get_content(data_process):
     driver = initialize_driver()
+    print('开始爬取文章')
 
     def retry_get(url):
         for attempt in range(3):
             try:
                 driver.get(url)
+                wait = WebDriverWait(driver, 2)
+                wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'TRS_UEDITOR.trs_paper_default')))
                 return True
-            except Exception as e:
+            except TimeoutException as e:
                 print(f"第{attempt + 1}次访问链接失败: {url}")
-                time.sleep(2)
         return False
 
     try:
@@ -79,26 +84,29 @@ def get_content(data_process):
         for item in data_process:
             if retry_get(item['link']):
                 try:
-                    item['content'] = driver.find_element(By.CLASS_NAME, 'TRS_UEDITOR trs_paper_default').text
                     item['classNames'] = driver.find_element(By.CLASS_NAME, 'li-hy').text
                     item['columnName'] = driver.find_element(By.CLASS_NAME, 'li-dw').text
                     item['createDate'] = driver.find_element(By.CLASS_NAME, 'li-sj').text
                     item['fileNum'] = driver.find_element(By.CLASS_NAME, 'li-zh').text
                 except NoSuchElementException:
-                    item['content'] = item['classNames'] = item['columnName'] = item['createDate'] = item['fileNum'] = '获取内容失败'
+                    item['classNames'] = item['columnName'] = item['createDate'] = item['fileNum'] = ''
+                try:
+                    item['content'] = driver.find_element(By.CLASS_NAME, 'TRS_UEDITOR.trs_paper_default').text
+                except NoSuchElementException:
+                    item['content'] = '获取内容失败'
             else:
                 print(f"跳过无法访问的链接: {item['link']}")
                 item['content'] = "无法访问页面"
 
             count += 1
-            if count % 20 == 0:
+            print(f'爬取第{count}篇文章')
+            if count % 50 == 0:
                 driver.quit()
-                print(f'爬取第{count}篇文章')
                 driver = initialize_driver()
 
     finally:
         driver.quit()
-        print('文章全部爬取完成')
+        print('文章爬取完成')
     return data_process
 
 

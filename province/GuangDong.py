@@ -1,11 +1,10 @@
-from unittest.mock import MagicMock
+import math
 from urllib.parse import quote
 from selenium import webdriver
 import time
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from writer import mysql_writer
@@ -22,28 +21,28 @@ def initialize_driver():
     return driver
 
 
-def get_url(policy):
-    url = f'https://www.beijing.gov.cn/so/s?siteCode=1100000088&tab=zcfg&qt={policy}'
+def get_page_total(policy):
+    url = f'https://search.gd.gov.cn/search/file/2?keywords={policy}&filterType=localSite&filterId=undefined'
     driver = initialize_driver()
     driver.get(url)
     wait = WebDriverWait(driver, 5)
-    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'middle-con-left-top')))
+    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'main-content')))
+    total = driver.find_element(By.CLASS_NAME, 'has-color').text
+    return math.ceil(int(total) / 20), total
 
-    lable = driver.find_elements(By.CSS_SELECTOR, '.position-con.item-choose')
-    js = 'arguments[0].setAttribute(arguments[1], arguments[2])'
-    driver.execute_script(js, lable[0], 'class', 'position-con item-choose')
-    driver.execute_script(js, lable[1], 'class', 'position-con item-choose item-choose-on')
 
+def get_url(page, policy):
+    driver = initialize_driver()
     process_data = []
-    page = count = 1
-    while page:
-        if page != 1:
-            page.click()
-            wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'middle-con-left-top')))
 
-        print(f'开始爬取第{count}页链接')
-        count += 1
-        poli = driver.find_elements(By.CLASS_NAME, 'search-result')
+    for page_count in range(1, page+1):
+        url = f'https://search.gd.gov.cn/search/file/2?page={page_count}&keywords={policy}&filterType=localSite&filterId=undefined'
+        driver.get(url)
+        print(f'开始爬取第{page_count}页链接')
+        wait = WebDriverWait(driver, 5)
+        wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'main-content')))
+
+        poli = driver.find_elements(By.CLASS_NAME, 'list-item.file')
 
         for elements in poli:
             record = {
@@ -52,37 +51,15 @@ def get_url(policy):
                 'fileNum': '',  # 发文字号
                 'columnName': '',  # 发文机构
                 'classNames': '',  # 主题分类
-                'createDate': '',  # 发文时间
+                'createDate': elements.find_element(By.CLASS_NAME, 'date'),  # 发文时间
                 'content': ''  # 文章内容
             }
 
-            table = elements.find_elements(By.CLASS_NAME, "row-content")
-            while len(table) < 4:
-                mock_element = MagicMock(spec=WebElement)
-                mock_element.text = ''
-                table.insert(0, mock_element)
-
-            for index, item in enumerate(table):
-                if index == 0:
-                    record['fileNum'] = item.text
-                elif index == 1:
-                    record['columnName'] = item.text
-                elif index == 2:
-                    record['classNames'] = item.text
-                elif index == 3:
-                    record['createDate'] = item.text
-
             process_data.append(record)
-
-        try:
-            driver.find_element(By.CSS_SELECTOR, '.next.disabled')
-            break
-        except NoSuchElementException:
-            page = driver.find_element(By.CLASS_NAME, 'next')
 
     driver.quit()
     print('链接爬取完成')
-    return process_data, len(process_data)
+    return process_data
 
 
 def get_content(data_process):
@@ -105,6 +82,24 @@ def get_content(data_process):
         for item in data_process:
             if retry_get(item['link']):
                 try:
+                    item['columnName'] = driver.find_element(By.CLASS_NAME, 'ly').text.replace('来源  :  ', '')
+                except NoSuchElementException:
+                    item['columnName'] = ''
+                try:
+                    line = driver.find_element(By.CLASS_NAME, 'classify').find_elements(By.XPATH, "//*[contains(@class, 'td-value')]")
+                    item['classNames'] = line[1].text
+                    item['columnName'] = line[2].text
+                    item['fileNum'] = line[5].text
+                except NoSuchElementException:
+                    item['classNames'] = item['columnName'] = item['fileNum'] = ''
+                try:
+                    line = driver.find_element(By.CLASS_NAME, 'introduce').find_elements(By.CLASS_NAME, 'col.left')
+                    item['classNames'] = line[1].text.replace('分类：', '')
+                    item['columnName'] = line[2].text.replace('发布机构：', '')
+                    item['fileNum'] = line[5].text.replace('文号：', '')
+                except NoSuchElementException:
+                    item['classNames'] = item['columnName'] = item['fileNum'] = ''
+                try:
                     item['content'] = driver.find_element(By.ID, 'mainText').text
                 except NoSuchElementException:
                     item['content'] = '获取内容失败'
@@ -126,10 +121,11 @@ def get_content(data_process):
 
 def main(un_policy):
     policy = quote(un_policy)
-    data_process, total = get_url(policy)
-    print(f"北京共计{total}篇文章")
+    page, total = get_page_total(policy)
+    print(f"广东共计{page}页，{total}篇文章")
+    data_process = get_url(page, policy)
     data = get_content(data_process)
-    #mysql_writer('beijing_wj', data)
+    #mysql_writer('guangdong_wj', data)
 
 
 if __name__ == "__main__":

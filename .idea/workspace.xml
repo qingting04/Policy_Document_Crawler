@@ -5,9 +5,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c8c374b-06fd-4f96-89f9-0c90c75a4fb2" name="更改" comment="无">
-      <change afterPath="$PROJECT_DIR$/demo.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/AoMen.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/GuangDong.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/GuangXi.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/GuiZhou.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/HaiNan.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/HeBei.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/HeNan.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/HeiLongJiang.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/HuBei.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/HuNan.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/JiLin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/JiangSu.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/JiangXi.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/LiaoNing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/NeiMengGu.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/NingXia.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/QingHai.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/ShanDong.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/ShanXi1.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/ShanXi2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/ShangHai.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/SiChuan.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/TaiWan.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/TianJin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/XiZhang.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/XiangGang.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/XinJiang.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/YunNan.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/ZheJiang.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/demo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/AnHui.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/AnHui.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/BeiJing.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/BeiJing.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/ChongQing.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/ChongQing.py" afterDir="false" />
@@ -61,14 +89,18 @@
     "Python.ChongQing.executor": "Run",
     "Python.FuJian.executor": "Run",
     "Python.GanSu.executor": "Run",
+    "Python.GuangDong.executor": "Run",
+    "Python.GuangXi.executor": "Run",
+    "Python.GuiZhou.executor": "Run",
     "Python.GuoWuYuan.executor": "Run",
+    "Python.HaiNan.executor": "Run",
     "Python.demo.executor": "Run",
     "Python.main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/PyCharm Community Edition 2023.3.4/project/Policy_Document_Crawler",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+    "last_opened_file_path": "D:/PyCharm Community Edition 2023.3.4/project/Policy_crawler",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
   <component name="RunManager">
@@ -119,7 +151,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722878823385</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="无">
+      <option name="closed" value="true" />
+      <created>1722923491397</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1722923491397</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

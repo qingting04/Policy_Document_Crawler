@@ -1,27 +1,50 @@
 import time
-
+from urllib.parse import quote
 from selenium import webdriver
+from selenium.common import NoSuchElementException
+from selenium.webdriver import Keys
 from selenium.webdriver.chrome.service import Service
 import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 from pyvirtualdisplay import Display
 from pywinauto import Desktop
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
-def initialize_undetected_driver():
-    options = uc.ChromeOptions()
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
-    driver = uc.Chrome(driver_executable_path=r'C:\Program Files\Google\Chrome\Application\chromedriver.exe',
-                       options=options)
+def initialize_driver():
+    options = webdriver.ChromeOptions()
+    #options.add_argument('--headless')
+    #options.add_argument('--no-sandbox')
+    #options.add_argument('--disable-dev-shm-usage')
+    driver = webdriver.Chrome(
+        service=Service(r'C:\Program Files\Google\Chrome\Application\chromedriver.exe'),
+        options=options)
     return driver
 
+policy = '营商环境'
 
-desktop = Desktop()
-driver = initialize_undetected_driver()
-driver.get('https://www.gansu.gov.cn/guestweb4/s?searchWord=%25E8%2590%25A5%25E5%2595%2586%25E7%258E%25AF%25E5%25A2%2583&column=%25E6%2594%25BF%25E5%258A%25A1%25E5%2585%25AC%25E5%25BC%2580&wordPlace=1&orderBy=0&startTime=&endTime=&pageSize=10&pageNum=0&timeStamp=0&siteCode=6200000001&sonSiteCode=&checkHandle=1&strFileType=&govWorkBean=%257B%257D&sonSiteCode=&areaSearchFlag=-1&secondSearchWords=&topical=&pubName=&countKey=0&uc=0&isSonSite=false&left_right_index=0')
-time.sleep(2)
-page = driver.find_element(By.CLASS_NAME, 'next')
-page.click()
-time.sleep(5)
+url = 'https://www.guizhou.gov.cn/ztzl/zcwjk/?isMobile=true'
+driver = initialize_driver()
+driver.get(url)
+wait = WebDriverWait(driver, 10)
 
+keywords = driver.find_element(By.ID, 'DocTitle')
+keywords.send_keys(policy)
+time.sleep(1)
+submit = driver.find_element(By.ID, 'search')
+submit.click()
+wjcj = driver.find_element(By.XPATH, "//div[@id='wjcj']//ul//li//a")
+wjcj.click()
+time.sleep(1)
+page = driver.find_element(By.XPATH, "//div[@class='pages']//a")
+
+
+while 1:
+    try:
+        driver.find_element(By.CSS_SELECTOR, ".pages[style='display: none;']")
+        break
+    except NoSuchElementException:
+        page.click()
+        time.sleep(1)
+time.sleep(500)
