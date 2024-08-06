@@ -9,7 +9,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 
 
-def fetch_policy_data(page):
+def fetch_policy_data(policy, page):
     cur_url = (
         f"https://www.ah.gov.cn/anhuisousuoserver/site/label/8888?_=0.45163228543990175&labelName=searchDataList"
         f"&isJson=true&isForPage=true&target=&pageSize=20&titleLength=35&contentLength=90&showType=2"
@@ -22,11 +22,10 @@ def fetch_policy_data(page):
     return response.json()
 
 
-def process_data(page):
-    data = fetch_policy_data(page)
+def process_data(unprocess_data):
     processed_data = []
 
-    for item in data['data']['data']:
+    for item in unprocess_data['data']['data']:
         line = str(item.get('columnName', '')).split('>')
         processed_item = {
             'link': item.get('link', ''),
@@ -42,10 +41,9 @@ def process_data(page):
     return processed_data
 
 
-def get_pageandtotal(page):
-    data = fetch_policy_data(page)
-    page_count = data['data']['pageCount']
-    total = data['data']['total']
+def get_pageandtotal(page_total_data):
+    page_count = page_total_data['data']['pageCount']
+    total = page_total_data['data']['total']
     return page_count, total
 
 
@@ -60,9 +58,8 @@ def initialize_driver():
     return driver
 
 
-def get_content(page):
+def get_content(data_process):
     driver = initialize_driver()
-    data_process = process_data(page)
 
     def retry_get(url):
         for attempt in range(3):
@@ -77,7 +74,7 @@ def get_content(page):
     try:
         for item in data_process:
             if retry_get(item['link']):
-                xpath = "//*[contains(@class, 'j-fontContent') or contains(@class, 'gzk-article') or contains(@class, 'art_p leftW' or contains(@id, 'UCAP-CONTENT') or contains(@class, 'con_font') or contains(@id, 'UCAP-CONTENT')]"
+                xpath = "//*[contains(@class, 'j-fontContent') or contains(@class, 'gzk-article') or contains(@class, 'art_p leftW') or contains(@id, 'UCAP-CONTENT') or contains(@class, 'con_font')]"
                 try:
                     item['content'] = driver.find_element(By.XPATH, xpath).text
                 except NoSuchElementException:
@@ -91,15 +88,18 @@ def get_content(page):
     return data_process
 
 
-def main():
-    page_count, total = get_pageandtotal(1)
+def main(un_policy):
+    policy = quote(un_policy)
+    page_total_data = fetch_policy_data(policy, 1)
+    page_count, total = get_pageandtotal(page_total_data)
     print(f"安徽文章共计{page_count}页，{total}篇文章")
     for page in range(1, page_count + 1):
         print(f'爬取第{page}页')
-        data = get_content(page)
+        unprocess_data = fetch_policy_data(policy, page)
+        data_process = process_data(unprocess_data)
+        data = get_content(data_process)
         #mysql_writer('anhui_wj', data)
 
 
 if __name__ == "__main__":
-    policy = quote("营商环境")
-    main()
+    main('营商环境')

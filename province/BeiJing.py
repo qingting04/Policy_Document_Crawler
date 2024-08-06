@@ -20,13 +20,13 @@ def initialize_driver():
     return driver
 
 
-def get_url():
+def get_url(policy):
     url = f'https://www.beijing.gov.cn/so/s?siteCode=1100000088&tab=zcfg&qt={policy}'
     driver = initialize_driver()
     driver.get(url)
     time.sleep(5)
 
-    lable = driver.find_element(By.CSS_SELECTOR, '.position-con.item-choose')
+    lable = driver.find_elements(By.CSS_SELECTOR, '.position-con.item-choose')
     js = 'arguments[0].setAttribute(arguments[1], arguments[2])'
     driver.execute_script(js, lable[0], 'class', 'position-con item-choose')
     driver.execute_script(js, lable[1], 'class', 'position-con item-choose item-choose-on')
@@ -99,9 +99,8 @@ def get_content(data_process):
         count = 0
         for item in data_process:
             if retry_get(item['link']):
-                xpath = "//*[@id='mainText']"
                 try:
-                    item['content'] = driver.find_element(By.XPATH, xpath).text
+                    item['content'] = driver.find_element(By.ID, 'mainText').text
                 except NoSuchElementException:
                     item['content'] = '获取内容失败'
             else:
@@ -116,16 +115,17 @@ def get_content(data_process):
 
     finally:
         driver.quit()
+        print('文章全部爬取完成')
     return data_process
 
 
-def main():
-    data_process, total = get_url()
+def main(un_policy):
+    policy = quote(un_policy)
+    data_process, total = get_url(policy)
     print(f"北京共计{total}篇文章")
     data = get_content(data_process)
     #mysql_writer('beijing_wj', data)
 
 
 if __name__ == "__main__":
-    policy = quote("营商环境")
-    main()
+    main('营商环境')

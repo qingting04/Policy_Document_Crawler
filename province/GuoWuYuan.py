@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 from writer import mysql_writer
 
 
-def fetch_policy_data(page):
+def fetch_policy_data(policy, page):
     cur_url = (
         f"https://sousuo.www.gov.cn/search-gov/data?t=zhengcelibrary&q={policy}&timetype=timeqb&mintime=&maxtime"
         f"=&sort=score&sortType=1&searchfield=title&pcodeJiguan=&childtype=&subchildtype=&tsbq=&pubtimeyear"
@@ -20,21 +20,19 @@ def fetch_policy_data(page):
     return response.json()
 
 
-def get_pageandtotal():
-    back = fetch_policy_data(1)
-    gongwen = back['searchVO']['catMap']['gongwen']['totalCount']
-    bumenfile = back['searchVO']['catMap']['bumenfile']['totalCount']
+def get_pageandtotal(page_total_data):
+    gongwen = page_total_data['searchVO']['catMap']['gongwen']['totalCount']
+    bumenfile = page_total_data['searchVO']['catMap']['bumenfile']['totalCount']
     total = gongwen + bumenfile
     page = math.ceil(gongwen/5) if gongwen > bumenfile else math.ceil(bumenfile/5)
     return page, total
 
 
-def process_data(page):
-    data = fetch_policy_data(page)
+def process_data(unprocess_data):
     processed_data = []
 
     def get_url(stt):
-        for item in data['searchVO']['catMap'][stt]['listVO']:
+        for item in unprocess_data['searchVO']['catMap'][stt]['listVO']:
             line = str(item.get('childtype', '')).split('\\')
             processed_item = {
                 'link': item.get('url', ''),
@@ -64,9 +62,8 @@ def initialize_driver():
     return driver
 
 
-def get_content(page):
+def get_content(data_process):
     driver = initialize_driver()
-    data_process = process_data(page)
 
     def retry_get(url):
         for attempt in range(3):
@@ -81,9 +78,8 @@ def get_content(page):
     try:
         for item in data_process:
             if retry_get(item['link']):
-                xpath = "//*[@id='UCAP-CONTENT']"
                 try:
-                    item['content'] = driver.find_element(By.XPATH, xpath).text
+                    item['content'] = driver.find_element(By.ID, 'UCAP-CONTENT').text
                 except NoSuchElementException:
                     item['content'] = '获取内容失败'
             else:
@@ -95,15 +91,18 @@ def get_content(page):
     return data_process
 
 
-def main():
-    page_count, total = get_pageandtotal()
+def main(un_policy):
+    policy = quote(un_policy)
+    page_total_data = fetch_policy_data(policy, 1)
+    page_count, total = get_pageandtotal(page_total_data)
     print(f"国务院文章共计{page_count}页，{total}篇文章")
     for page in range(1, page_count + 1):
         print(f'爬取第{page}页')
-        data = get_content(page)
+        unprocess_data = fetch_policy_data(policy, page)
+        data_process = process_data(unprocess_data)
+        data = get_content(data_process)
         #mysql_writer('guowuyuan_wj', data)
 
 
 if __name__ == "__main__":
-    policy = quote("营商环境")
-    main()
+    main('营商环境')

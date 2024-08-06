@@ -20,7 +20,7 @@ def initialize_driver():
     return driver
 
 
-def get_url():
+def get_url(policy):
     url = f'https://www.fujian.gov.cn/zwgk/zcwjk/main.htm?keyWord={policy}'
     driver = initialize_driver()
     driver.get(url)
@@ -93,9 +93,8 @@ def get_content(data_process):
         count = 0
         for item in data_process:
             if retry_get(item['link']):
-                xpath = "//*[@class='TRS_Editor']"
                 try:
-                    item['content'] = driver.find_element(By.XPATH, xpath).text
+                    item['content'] = driver.find_element(By.CLASS_NAME, 'TRS_Editor').text
                 except NoSuchElementException:
                     item['content'] = item['fileNum'] = '获取内容失败'
             else:
@@ -110,16 +109,17 @@ def get_content(data_process):
 
     finally:
         driver.quit()
+        print('文章全部爬取完成')
     return data_process
 
 
-def main():
-    data_process, total = get_url()
+def main(un_policy):
+    policy = quote(un_policy)
+    data_process, total = get_url(policy)
     print(f'福建共计{total}篇文章')
     data = get_content(data_process)
     #mysql_writer('fujian_wj', data)
 
 
 if __name__ == "__main__":
-    policy = quote('营商环境')
-    main()
+    main('营商环境')

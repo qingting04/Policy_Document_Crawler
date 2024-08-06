@@ -18,7 +18,7 @@ def initialize_driver():
     return driver
 
 
-def get_url():
+def get_url(policy):
     url = (
         f'https://www.cq.gov.cn/cqgovsearch/search.html?searchWord={policy}&tenantId=7&configTenantId=7&dataTypeId=10'
         f'&sign=d8c59723-1595-4f7c-a3e1-1ba32c274682&pageSize=10&seniorBox=0&advancedFilters=&isAdvancedSearch=0'
@@ -79,11 +79,11 @@ def get_content(data_process):
         for item in data_process:
             if retry_get(item['link']):
                 try:
-                    item['content'] = driver.find_element(By.XPATH, "//*[contains(@class, 'TRS_UEDITOR trs_paper_default')]").text
-                    item['classNames'] = driver.find_element(By.XPATH, "//*[contains(@class, 'li-hy')]").text
-                    item['columnName'] = driver.find_element(By.XPATH, "//*[contains(@class, 'li-dw')]").text
-                    item['createDate'] = driver.find_element(By.XPATH, "//*[contains(@class, 'li-sj')]").text
-                    item['fileNum'] = driver.find_element(By.XPATH, "//*[contains(@class, 'li-zh')]").text
+                    item['content'] = driver.find_element(By.CLASS_NAME, 'TRS_UEDITOR trs_paper_default').text
+                    item['classNames'] = driver.find_element(By.CLASS_NAME, 'li-hy').text
+                    item['columnName'] = driver.find_element(By.CLASS_NAME, 'li-dw').text
+                    item['createDate'] = driver.find_element(By.CLASS_NAME, 'li-sj').text
+                    item['fileNum'] = driver.find_element(By.CLASS_NAME, 'li-zh').text
                 except NoSuchElementException:
                     item['content'] = item['classNames'] = item['columnName'] = item['createDate'] = item['fileNum'] = '获取内容失败'
             else:
@@ -98,16 +98,17 @@ def get_content(data_process):
 
     finally:
         driver.quit()
+        print('文章全部爬取完成')
     return data_process
 
 
-def main():
-    data_process, total = get_url()
+def main(un_policy):
+    policy = quote(un_policy)
+    data_process, total = get_url(policy)
     print(f"重庆共计{total}篇文章")
     data = get_content(data_process)
-    mysql_writer('chongqing_wj', data)
+    #mysql_writer('chongqing_wj', data)
 
 
 if __name__ == "__main__":
-    policy = quote("营商环境")
-    main()
+    main('营商环境')
