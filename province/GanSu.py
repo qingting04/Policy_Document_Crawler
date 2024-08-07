@@ -1,3 +1,4 @@
+import time
 from urllib.parse import quote
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 import undetected_chromedriver as uc
@@ -28,20 +29,23 @@ def get_url(policy):
     wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'leftSide-layer.fl')))
 
     process_data = []
-    page = count = 1
-    while page:
-        if page != 1:
-            page.click()
-            wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'leftSide-layer.fl')))
+    count = 1
+    while True:
 
         print(f'开始爬取第{count}页链接')
         count += 1
+
+        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.zhezhao[style="display: none;"]')))
         poli = driver.find_elements(By.CLASS_NAME, 'wordGuide.Residence-permit')
 
         for elements in poli:
             try:
-                fileNum = elements.find_elements(By.CLASS_NAME, 'color555')[2].text
-            except:
+                line = elements.find_elements(By.CLASS_NAME, 'color555')
+                if len(line) == 0:
+                    fileNum = ''
+                else:
+                    fileNum = line[2].text
+            except NoSuchElementException:
                 fileNum = ''
             record = {
                 'link': elements.find_element(By.TAG_NAME, "a").get_attribute('href'),  # 链接
@@ -55,11 +59,13 @@ def get_url(policy):
 
             process_data.append(record)
 
+        wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(@class, 'next')]")))
         try:
             driver.find_element(By.CLASS_NAME, 'next.disabled')
             break
-        except:
-            page = driver.find_element(By.CLASS_NAME, 'next')
+        except NoSuchElementException:
+            driver.find_element(By.CLASS_NAME, 'next').click()
+            wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'leftSide-layer.fl')))
 
     driver.quit()
     print('链接爬取完成')

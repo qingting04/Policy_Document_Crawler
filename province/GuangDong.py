@@ -26,7 +26,7 @@ def get_page_total(policy):
     driver = initialize_driver()
     driver.get(url)
     wait = WebDriverWait(driver, 5)
-    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'main-content')))
+    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'total-line')))
     total = driver.find_element(By.CLASS_NAME, 'has-color').text
     return math.ceil(int(total) / 20), total
 
@@ -40,7 +40,7 @@ def get_url(page, policy):
         driver.get(url)
         print(f'开始爬取第{page_count}页链接')
         wait = WebDriverWait(driver, 5)
-        wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'main-content')))
+        wait.until(EC.invisibility_of_element_located((By.CLASS_NAME, 'list-loading')))
 
         poli = driver.find_elements(By.CLASS_NAME, 'list-item.file')
 
@@ -54,7 +54,6 @@ def get_url(page, policy):
                 'createDate': elements.find_element(By.CLASS_NAME, 'date'),  # 发文时间
                 'content': ''  # 文章内容
             }
-
             process_data.append(record)
 
     driver.quit()
@@ -71,12 +70,13 @@ def get_content(data_process):
             try:
                 driver.get(url)
                 wait = WebDriverWait(driver, 2)
-                wait.until(EC.presence_of_element_located((By.ID, 'mainText')))
+                wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
                 return True
             except TimeoutException as e:
                 print(f"第{attempt + 1}次访问链接失败: {url}")
         return False
 
+    xpath = '//*[@id="mainText"] | //*[@class="article-content"] | //*[@class="zw"]'
     try:
         count = 0
         for item in data_process:
@@ -100,7 +100,7 @@ def get_content(data_process):
                 except NoSuchElementException:
                     item['classNames'] = item['columnName'] = item['fileNum'] = ''
                 try:
-                    item['content'] = driver.find_element(By.ID, 'mainText').text
+                    item['content'] = driver.find_element(By.XPATH, xpath).text
                 except NoSuchElementException:
                     item['content'] = '获取内容失败'
             else:

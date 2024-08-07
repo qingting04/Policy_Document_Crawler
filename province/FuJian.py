@@ -25,12 +25,13 @@ def get_url(policy):
     url = f'https://www.fujian.gov.cn/zwgk/zcwjk/main.htm?keyWord={policy}'
     driver = initialize_driver()
     driver.get(url)
+
     wait = WebDriverWait(driver, 5)
-    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'pad-l')))
+    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.clearflx.mar_t50[style="display: none;"]')))
 
     element = driver.find_element(By.CSS_SELECTOR, '[barrier-free-idx="312"]')
     driver.execute_script("arguments[0].click();", element)
-    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'pad-l')))
+    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.clearflx.mar_t50[style="display: none;"]')))
 
     total = driver.find_element(By.XPATH, "//span[@class='show']//em").text
     process_data = []
@@ -71,7 +72,7 @@ def get_url(policy):
             process_data.append(record)
 
         driver.execute_script("arguments[0].click();", page)
-        wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'pad-l')))
+        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.clearflx.mar_t50[style="display: none;"]')))
 
     driver.quit()
     print('链接爬取完成')
@@ -87,18 +88,19 @@ def get_content(data_process):
             try:
                 driver.get(url)
                 wait = WebDriverWait(driver, 2)
-                wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'TRS_Editor')))
+                wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
                 return True
             except TimeoutException as e:
                 print(f"第{attempt + 1}次访问链接失败: {url}")
         return False
 
+    xpath = "//*[@class='TRS_Editor'] | //*[@class='Custom_UnionStyle']"
     try:
         count = 0
         for item in data_process:
             if retry_get(item['link']):
                 try:
-                    item['content'] = driver.find_element(By.CLASS_NAME, 'TRS_Editor').text
+                    item['content'] = driver.find_element(By.XPATH, xpath).text
                 except NoSuchElementException:
                     item['content'] = item['fileNum'] = '获取内容失败'
             else:

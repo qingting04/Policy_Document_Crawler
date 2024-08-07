@@ -33,16 +33,16 @@ def get_url(policy):
     time.sleep(1)
     submit = driver.find_element(By.ID, 'search')
     submit.click()
-    wjcj = driver.find_element(By.XPATH, "//div[@id='wjcj']//ul//li//a")
+    wjcj = driver.find_element(By.XPATH, "//div[@id='wjcj']/ul/li/a")
     wjcj.click()
     time.sleep(1)
 
-    page = driver.find_element(By.XPATH, "//div[@class='pages']//a")
+    page = driver.find_element(By.XPATH, "//div[@class='pages']/a")
     process_data = []
-    while 1:
+    while True:
         try:
             driver.find_element(By.CSS_SELECTOR, ".pages[style='display: none;']")
-            poli = driver.find_elements(By.XPATH, "//ul[@class='ResultCon']//li")
+            poli = driver.find_elements(By.XPATH, "//ul[@class='ResultCon']/li")
             print('页面全部展开')
             break
         except NoSuchElementException:
@@ -56,9 +56,10 @@ def get_url(policy):
             'fileNum': '',  # 发文字号
             'columnName': '',  # 发文机构
             'classNames': '',  # 主题分类
-            'createDate': elements.find_element(By.XPATH, "//div[@class='stime yx']//span[2]").text,  # 发文时间
+            'createDate': elements.find_element(By.XPATH, "//div[@class='stime yx']/span[2]").text,  # 发文时间
             'content': ''  # 文章内容
         }
+        print(record)
         process_data.append(record)
 
     driver.quit()
@@ -71,7 +72,7 @@ def get_content(data_process):
     print('开始爬取文章')
     xpath = ("//*[contains(@class, 'TRS_UEDITOR trs_paper_default') or "
              "contains(@class, 'mianbox') or "
-             "contains(@class，'content')]")
+             "contains(@class, 'content')]")
     count = 0
 
     def retry_get(url):

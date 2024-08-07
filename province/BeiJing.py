@@ -1,7 +1,7 @@
+import time
 from unittest.mock import MagicMock
 from urllib.parse import quote
 from selenium import webdriver
-import time
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -35,12 +35,8 @@ def get_url(policy):
     driver.execute_script(js, lable[1], 'class', 'position-con item-choose item-choose-on')
 
     process_data = []
-    page = count = 1
-    while page:
-        if page != 1:
-            page.click()
-            wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'middle-con-left-top')))
-
+    count = 1
+    while True:
         print(f'开始爬取第{count}页链接')
         count += 1
         poli = driver.find_elements(By.CLASS_NAME, 'search-result')
@@ -74,11 +70,13 @@ def get_url(policy):
 
             process_data.append(record)
 
+        wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(@class, 'next')]")))
         try:
             driver.find_element(By.CSS_SELECTOR, '.next.disabled')
             break
         except NoSuchElementException:
-            page = driver.find_element(By.CLASS_NAME, 'next')
+            driver.find_element(By.CLASS_NAME, 'next').click()
+            time.sleep(0.5)
 
     driver.quit()
     print('链接爬取完成')

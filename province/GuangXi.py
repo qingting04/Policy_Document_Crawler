@@ -35,12 +35,8 @@ def get_url(policy):
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".el-loading-mask[style='display: none;']")))
 
     process_data = []
-    page = count = 1
-    while page:
-        if page != 1:
-            driver.execute_script("arguments[0].click();", page)
-            wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".el-loading-mask[style='display: none;']")))
-
+    count = 1
+    while True:
         print(f'开始爬取第{count}页链接')
         count += 1
         poli = driver.find_elements(By.CSS_SELECTOR, '[data-v-1fd20c7e].file.box')
@@ -65,6 +61,8 @@ def get_url(policy):
             break
         except NoSuchElementException:
             page = driver.find_element(By.CLASS_NAME, 'btn-next')
+            driver.execute_script("arguments[0].click();", page)
+            wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".el-loading-mask[style='display: none;']")))
 
     driver.quit()
     print('链接爬取完成')

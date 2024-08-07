@@ -31,12 +31,8 @@ def get_url(policy):
     wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'basic_result_content')))
 
     process_data = []
-    page = count = 1
-    while page:
-        if page != 1:
-            page.click()
-            wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'basic_result_content')))
-
+    count = 1
+    while True:
         print(f'开始爬取第{count}页链接')
         count += 1
         poli = driver.find_elements(By.CLASS_NAME, 'item.is-policy')
@@ -53,11 +49,13 @@ def get_url(policy):
             }
             process_data.append(record)
 
+        wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(@class, 'layui-laypage-next')]")))
         try:
             driver.find_element(By.CSS_SELECTOR, '.layui-laypage-next.layui-disabled')
             break
-        except:
-            page = driver.find_element(By.CLASS_NAME, 'layui-laypage-next')
+        except NoSuchElementException:
+            driver.find_element(By.CLASS_NAME, 'layui-laypage-next').click()
+            time.sleep(1)
 
     driver.quit()
     print('链接爬取完成')
@@ -73,11 +71,15 @@ def get_content(data_process):
             try:
                 driver.get(url)
                 wait = WebDriverWait(driver, 2)
-                wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'TRS_UEDITOR.trs_paper_default')))
+                wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
                 return True
             except TimeoutException as e:
                 print(f"第{attempt + 1}次访问链接失败: {url}")
         return False
+
+    xpath = (
+        "//*[contains(@class, 'TRS_UEDITOR trs_paper_default')] | //*[@class='TRS_UEDITOR trs_key4format trs_web']"
+    )
 
     try:
         count = 0
@@ -91,7 +93,7 @@ def get_content(data_process):
                 except NoSuchElementException:
                     item['classNames'] = item['columnName'] = item['createDate'] = item['fileNum'] = ''
                 try:
-                    item['content'] = driver.find_element(By.CLASS_NAME, 'TRS_UEDITOR.trs_paper_default').text
+                    item['content'] = driver.find_element(By.XPATH, xpath).text
                 except NoSuchElementException:
                     item['content'] = '获取内容失败'
             else:
