@@ -39,14 +39,17 @@ def initialize_driver(policy, url):
 def get_total(policy):
     url = 'https://www.hlj.gov.cn/znwd/policy/#/index'
     driver = initialize_driver(policy, url)
-    while True:
-        try:
-            page = driver.find_element(By.CLASS_NAME, 'recommend-more')
-            page.click()
-            time.sleep(0.5)
-        except NoSuchElementException:
-            poli = driver.find_elements(By.CLASS_NAME, 'recommend-item')
-            break
+    try:
+        while True:
+            try:
+                page = driver.find_element(By.CLASS_NAME, 'recommend-more')
+                page.click()
+                time.sleep(0.5)
+            except NoSuchElementException:
+                poli = driver.find_elements(By.CLASS_NAME, 'recommend-item')
+                break
+    finally:
+        driver.quit()
     return len(poli)
 
 
@@ -59,64 +62,67 @@ def get_all(policy):
     process_data = []
     visited_title = set()
     xpath = "//*[@class='pc-policy-title text-center'] | //*[@class='pc-read-title']"
-    while True:
-        poli = driver.find_elements(By.CLASS_NAME, 'recommend-item')
 
-        for elements in poli:
-            title = elements.find_element(By.CLASS_NAME, 'recommend-title').text
-            if title not in visited_title:
-                elements.find_element(By.CLASS_NAME, 'recommend-title').click()
-                visited_title.add(title)
+    try:
+        while True:
+            poli = driver.find_elements(By.CLASS_NAME, 'recommend-item')
 
-        windows_handles = driver.window_handles
-        main_window_handle = driver.current_window_handle
-        for window in windows_handles:
-            if window != main_window_handle:
-                count += 1
-                print(f'爬取第{count}篇文章')
-                driver.switch_to.window(window)
-                wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'pc-text-html.policy-body-center')))
-                while True:
-                    title = driver.find_element(By.XPATH, xpath).text
-                    if title == '':
-                        time.sleep(0.5)
-                    else:
-                        break
+            for elements in poli:
+                title = elements.find_element(By.CLASS_NAME, 'recommend-title').text
+                if title not in visited_title:
+                    elements.find_element(By.CLASS_NAME, 'recommend-title').click()
+                    visited_title.add(title)
 
-                try:
-                    table = driver.find_element(By.CLASS_NAME, 'pc-table')
-                    table = table.find_elements(By.TAG_NAME, 'td')
-                    line = [table[0].text, table[1].text, table[2].text]
-                except NoSuchElementException:
-                    line = ['', '', '']
-                record = {
-                    'link': driver.current_url,  # 链接
-                    'title': driver.find_element(By.XPATH, xpath).text,  # 标题
-                    'fileNum': line[1],  # 发文字号
-                    'columnName': line[0],  # 发文机构
-                    'classNames': '',  # 主题分类
-                    'createDate': line[2],  # 发文时间
-                    'content': driver.find_element(By.CLASS_NAME, 'pc-text-html.policy-body-center').text  # 文章内容
-                }
-                print(record)
-                process_data.append(record)
+            windows_handles = driver.window_handles
+            main_window_handle = driver.current_window_handle
+            for window in windows_handles:
+                if window != main_window_handle:
+                    count += 1
+                    print(f'爬取第{count}篇文章')
+                    driver.switch_to.window(window)
+                    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'pc-text-html.policy-body-center')))
+                    while True:
+                        title = driver.find_element(By.XPATH, xpath).text
+                        if title == '':
+                            time.sleep(0.5)
+                        else:
+                            break
 
-        for window in windows_handles:
-            if window != main_window_handle:
-                driver.switch_to.window(window)
-                driver.close()
-        driver.switch_to.window(main_window_handle)
+                    try:
+                        table = driver.find_element(By.CLASS_NAME, 'pc-table')
+                        table = table.find_elements(By.TAG_NAME, 'td')
+                        line = [table[0].text, table[1].text, table[2].text]
+                    except NoSuchElementException:
+                        line = ['', '', '']
+                    record = {
+                        'link': driver.current_url,  # 链接
+                        'title': driver.find_element(By.XPATH, xpath).text,  # 标题
+                        'fileNum': line[1],  # 发文字号
+                        'columnName': line[0],  # 发文机构
+                        'classNames': '',  # 主题分类
+                        'createDate': line[2],  # 发文时间
+                        'content': driver.find_element(By.CLASS_NAME, 'pc-text-html.policy-body-center').text  # 文章内容
+                    }
+                    print(record)
+                    process_data.append(record)
 
-        try:
-            page = driver.find_element(By.CLASS_NAME, 'recommend-more')
-            page.click()
-            time.sleep(0.5)
-        except NoSuchElementException:
-            break
+            for window in windows_handles:
+                if window != main_window_handle:
+                    driver.switch_to.window(window)
+                    driver.close()
+            driver.switch_to.window(main_window_handle)
 
-    driver.quit()
-    print('文章爬取完成')
+            try:
+                page = driver.find_element(By.CLASS_NAME, 'recommend-more')
+                page.click()
+                time.sleep(0.5)
+            except NoSuchElementException:
+                break
+    finally:
+        driver.quit()
+        print('文章爬取完成')
     return process_data
+
 
 def main(policy):
     total = get_total(policy)

@@ -32,8 +32,10 @@ def initialize_driver(policy, url):
 def get_total(policy):
     url = 'https://hbrd.pkulaw.com/web/#/home?pidLevel=SY01'
     driver = initialize_driver(policy, url)
-    total = driver.find_element(By.XPATH, "//div[@class='header-title-box line']//span[@class='red']").text
-    driver.quit()
+    try:
+        total = driver.find_element(By.XPATH, "//div[@class='header-title-box line']//span[@class='red']").text
+    finally:
+        driver.quit()
 
     return int(total)
 
@@ -50,45 +52,46 @@ def get_all(policy):
         driver = initialize_driver(policy, url)
         wait = WebDriverWait(driver, 5)
 
-        while True:
-            poli = driver.find_elements(By.XPATH, "//div[@class='el-checkbox-group']/li")
-            for elements in poli:
-                elements.find_element(By.CLASS_NAME, 'el-tooltip.ellipsis2').click()
+        try:
+            while True:
+                poli = driver.find_elements(By.XPATH, "//div[@class='el-checkbox-group']/li")
+                for elements in poli:
+                    elements.find_element(By.CLASS_NAME, 'el-tooltip.ellipsis2').click()
 
-            windows_handles = driver.window_handles
-            main_window_handle = driver.current_window_handle
-            for window in windows_handles:
-                if window != main_window_handle:
-                    count += 1
-                    print(f'爬取第{count}篇文章')
-                    driver.switch_to.window(window)
-                    wait.until(EC.presence_of_element_located((By.CLASS_NAME, "article-details-html.article-html-box")))
-                    line = driver.find_elements(By.XPATH, "//div[contains(@class, 'form-item-content')]")
-                    record = {
-                        'link': driver.current_url,  # 链接
-                        'title': driver.find_element(By.XPATH, "//div[@class='title-div-box']/h3").text,  # 标题
-                        'fileNum': line[1].text,  # 发文字号
-                        'columnName': line[0].text,  # 发文机构
-                        'classNames': line[5].text,  # 主题分类
-                        'createDate': line[2].text,  # 发文时间
-                        'content': driver.find_element(By.CLASS_NAME, 'article-details-html.article-html-box').text  # 文章内容
-                    }
-                    process_data.append(record)
+                windows_handles = driver.window_handles
+                main_window_handle = driver.current_window_handle
+                for window in windows_handles:
+                    if window != main_window_handle:
+                        count += 1
+                        print(f'爬取第{count}篇文章')
+                        driver.switch_to.window(window)
+                        wait.until(EC.presence_of_element_located((By.CLASS_NAME, "article-details-html.article-html-box")))
+                        line = driver.find_elements(By.XPATH, "//div[contains(@class, 'form-item-content')]")
+                        record = {
+                            'link': driver.current_url,  # 链接
+                            'title': driver.find_element(By.XPATH, "//div[@class='title-div-box']/h3").text,  # 标题
+                            'fileNum': line[1].text,  # 发文字号
+                            'columnName': line[0].text,  # 发文机构
+                            'classNames': line[5].text,  # 主题分类
+                            'createDate': line[2].text,  # 发文时间
+                            'content': driver.find_element(By.CLASS_NAME, 'article-details-html.article-html-box').text  # 文章内容
+                        }
+                        process_data.append(record)
 
-            for window in windows_handles:
-                if window != main_window_handle:
-                    driver.switch_to.window(window)
-                    driver.close()
-            driver.switch_to.window(main_window_handle)
+                for window in windows_handles:
+                    if window != main_window_handle:
+                        driver.switch_to.window(window)
+                        driver.close()
+                driver.switch_to.window(main_window_handle)
 
-            try:
-                driver.find_element(By.CSS_SELECTOR, ".btn-next[disabled='disabled']")
-                break
-            except NoSuchElementException:
-                driver.find_element(By.CLASS_NAME, "el-icon.el-icon-arrow-right").click()
-                wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.el-loading-mask[style="display: none;"]')))
-
-        driver.quit()
+                try:
+                    driver.find_element(By.CSS_SELECTOR, ".btn-next[disabled='disabled']")
+                    break
+                except NoSuchElementException:
+                    driver.find_element(By.CLASS_NAME, "el-icon.el-icon-arrow-right").click()
+                    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.el-loading-mask[style="display: none;"]')))
+        finally:
+            driver.quit()
     print('文章爬取完成')
     return process_data
 

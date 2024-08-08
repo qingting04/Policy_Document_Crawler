@@ -24,10 +24,13 @@ def initialize_driver():
 def get_page_total(policy):
     url = f'https://search.gd.gov.cn/search/file/2?keywords={policy}&filterType=localSite&filterId=undefined'
     driver = initialize_driver()
-    driver.get(url)
-    wait = WebDriverWait(driver, 5)
-    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'total-line')))
-    total = driver.find_element(By.CLASS_NAME, 'has-color').text
+    try:
+        driver.get(url)
+        wait = WebDriverWait(driver, 5)
+        wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'total-line')))
+        total = driver.find_element(By.CLASS_NAME, 'has-color').text
+    finally:
+        driver.quit()
     return math.ceil(int(total) / 20), total
 
 
@@ -35,29 +38,31 @@ def get_url(page, policy):
     driver = initialize_driver()
     process_data = []
 
-    for page_count in range(1, page+1):
-        url = f'https://search.gd.gov.cn/search/file/2?page={page_count}&keywords={policy}&filterType=localSite&filterId=undefined'
-        driver.get(url)
-        print(f'开始爬取第{page_count}页链接')
-        wait = WebDriverWait(driver, 5)
-        wait.until(EC.invisibility_of_element_located((By.CLASS_NAME, 'list-loading')))
+    try:
+        for page_count in range(1, page+1):
+            url = f'https://search.gd.gov.cn/search/file/2?page={page_count}&keywords={policy}&filterType=localSite&filterId=undefined'
+            driver.get(url)
+            print(f'开始爬取第{page_count}页链接')
+            wait = WebDriverWait(driver, 5)
+            wait.until(EC.invisibility_of_element_located((By.CLASS_NAME, 'list-loading')))
 
-        poli = driver.find_elements(By.CLASS_NAME, 'list-item.file')
+            poli = driver.find_elements(By.CLASS_NAME, 'list-item.file')
 
-        for elements in poli:
-            record = {
-                'link': elements.find_element(By.TAG_NAME, "a").get_attribute('href'),  # 链接
-                'title': elements.find_element(By.TAG_NAME, "a").text,  # 标题
-                'fileNum': '',  # 发文字号
-                'columnName': '',  # 发文机构
-                'classNames': '',  # 主题分类
-                'createDate': elements.find_element(By.CLASS_NAME, 'date'),  # 发文时间
-                'content': ''  # 文章内容
-            }
-            process_data.append(record)
+            for elements in poli:
+                record = {
+                    'link': elements.find_element(By.TAG_NAME, "a").get_attribute('href'),  # 链接
+                    'title': elements.find_element(By.TAG_NAME, "a").text,  # 标题
+                    'fileNum': '',  # 发文字号
+                    'columnName': '',  # 发文机构
+                    'classNames': '',  # 主题分类
+                    'createDate': elements.find_element(By.CLASS_NAME, 'date'),  # 发文时间
+                    'content': ''  # 文章内容
+                }
+                process_data.append(record)
 
-    driver.quit()
-    print('链接爬取完成')
+    finally:
+        driver.quit()
+        print('链接爬取完成')
     return process_data
 
 

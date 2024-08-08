@@ -24,46 +24,48 @@ def initialize_driver():
 def get_url(policy):
     url = 'https://www.guizhou.gov.cn/ztzl/zcwjk/?isMobile=true'
     driver = initialize_driver()
-    driver.get(url)
-    wait = WebDriverWait(driver, 5)
-    wait.until(EC.presence_of_element_located((By.CLASS_NAME, "SearchResultPart.aBox.f_l")))
 
-    keywords = driver.find_element(By.ID, 'DocTitle')
-    keywords.send_keys(policy)
-    time.sleep(1)
-    submit = driver.find_element(By.ID, 'search')
-    submit.click()
-    wjcj = driver.find_element(By.XPATH, "//div[@id='wjcj']/ul/li/a")
-    wjcj.click()
-    time.sleep(1)
+    try:
+        driver.get(url)
+        wait = WebDriverWait(driver, 5)
+        wait.until(EC.presence_of_element_located((By.CLASS_NAME, "SearchResultPart.aBox.f_l")))
 
-    page = driver.find_element(By.XPATH, "//div[@class='pages']/a")
-    process_data = []
-    while True:
-        try:
-            driver.find_element(By.CSS_SELECTOR, ".pages[style='display: none;']")
-            poli = driver.find_elements(By.XPATH, "//ul[@class='ResultCon']/li")
-            print('页面全部展开')
-            break
-        except NoSuchElementException:
-            page.click()
-            time.sleep(1)
+        keywords = driver.find_element(By.ID, 'DocTitle')
+        keywords.send_keys(policy)
+        time.sleep(1)
+        submit = driver.find_element(By.ID, 'search')
+        submit.click()
+        wjcj = driver.find_element(By.XPATH, "//div[@id='wjcj']/ul/li/a")
+        wjcj.click()
+        time.sleep(1)
 
-    for elements in poli:
-        record = {
-            'link': elements.find_element(By.TAG_NAME, 'a').get_attribute('href'),  # 链接
-            'title': elements.find_element(By.TAG_NAME, 'a').get_attribute('title'),  # 标题
-            'fileNum': '',  # 发文字号
-            'columnName': '',  # 发文机构
-            'classNames': '',  # 主题分类
-            'createDate': elements.find_element(By.XPATH, "//div[@class='stime yx']/span[2]").text,  # 发文时间
-            'content': ''  # 文章内容
-        }
-        print(record)
-        process_data.append(record)
+        page = driver.find_element(By.XPATH, "//div[@class='pages']/a")
+        process_data = []
+        while True:
+            try:
+                driver.find_element(By.CSS_SELECTOR, ".pages[style='display: none;']")
+                poli = driver.find_elements(By.XPATH, "//ul[@class='ResultCon']/li")
+                print('页面全部展开')
+                break
+            except NoSuchElementException:
+                page.click()
+                time.sleep(1)
 
-    driver.quit()
-    print('链接爬取完成')
+        for elements in poli:
+            record = {
+                'link': elements.find_element(By.TAG_NAME, 'a').get_attribute('href'),  # 链接
+                'title': elements.find_element(By.TAG_NAME, 'a').get_attribute('title'),  # 标题
+                'fileNum': '',  # 发文字号
+                'columnName': '',  # 发文机构
+                'classNames': '',  # 主题分类
+                'createDate': elements.find_element(By.XPATH, "//div[@class='stime yx']/span[2]").text,  # 发文时间
+                'content': ''  # 文章内容
+            }
+            process_data.append(record)
+
+    finally:
+        driver.quit()
+        print('链接爬取完成')
     return process_data, len(process_data)
 
 

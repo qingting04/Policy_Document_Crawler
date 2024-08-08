@@ -102,6 +102,7 @@ def get_content(data_process):
 
             count += 1
             print(f'爬取第{count}篇文章')
+            print(item)
             if count % 50 == 0:
                 driver.quit()
                 driver = initialize_driver()
@@ -121,7 +122,7 @@ def main(un_policy):
     unprocess_data = fetch_policy_data(policy, page)
     data_process = process_data(unprocess_data)
     data = get_content(data_process)
-    #mysql_writer('guowuyuan_wj', data)
+    # mysql_writer('guowuyuan_wj', data)
 
 
 if __name__ == "__main__":

@@ -26,46 +26,49 @@ def get_url(policy):
            f'&isSearchForced=0&pageNo=1&pageSize=10&isAdvancedSearch&isDefaultAdvanced&advancedFilters'
            f'&searchWord={policy}')
     driver = initialize_driver()
-    driver.get(url)
-    wait = WebDriverWait(driver, 100)
-    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".el-loading-mask[style='display: none;']")))
 
-    biaoti = driver.find_element(By.XPATH, '//*[@id="app"]/div/div[5]/div[1]/div[2]/div/span[2]')
-    biaoti.click()
-    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".el-loading-mask[style='display: none;']")))
+    try:
+        driver.get(url)
+        wait = WebDriverWait(driver, 100)
+        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".el-loading-mask[style='display: none;']")))
 
-    process_data = []
-    count = 1
-    while True:
-        print(f'开始爬取第{count}页链接')
-        count += 1
-        poli = driver.find_elements(By.CSS_SELECTOR, '[data-v-1fd20c7e].file.box')
+        biaoti = driver.find_element(By.XPATH, '//*[@id="app"]/div/div[5]/div[1]/div[2]/div/span[2]')
+        biaoti.click()
+        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".el-loading-mask[style='display: none;']")))
 
-        for elements in poli:
-            title = elements.find_element(By.CLASS_NAME, "main-title").text
-            title = re.sub(r'（.*?）', '', title).replace(' ', '')
-            line = elements.find_elements(By.CLASS_NAME, 'td-content')
-            record = {
-                'link': elements.find_element(By.TAG_NAME, "a").get_attribute('href'),  # 链接
-                'title': title,  # 标题
-                'fileNum': line[4].text,  # 发文字号
-                'columnName': line[2].text,  # 发文机构
-                'classNames': line[1].text,  # 主题分类],  # 主题分类
-                'createDate': line[3].text,  # 发文时间
-                'content': ''  # 文章内容
-            }
-            process_data.append(record)
+        process_data = []
+        count = 1
+        while True:
+            print(f'开始爬取第{count}页链接')
+            count += 1
+            poli = driver.find_elements(By.CSS_SELECTOR, '[data-v-1fd20c7e].file.box')
 
-        try:
-            driver.find_element(By.CSS_SELECTOR, '.btn-next[disabled="disabled"]')
-            break
-        except NoSuchElementException:
-            page = driver.find_element(By.CLASS_NAME, 'btn-next')
-            driver.execute_script("arguments[0].click();", page)
-            wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".el-loading-mask[style='display: none;']")))
+            for elements in poli:
+                title = elements.find_element(By.CLASS_NAME, "main-title").text
+                title = re.sub(r'（.*?）', '', title).replace(' ', '')
+                line = elements.find_elements(By.CLASS_NAME, 'td-content')
+                record = {
+                    'link': elements.find_element(By.TAG_NAME, "a").get_attribute('href'),  # 链接
+                    'title': title,  # 标题
+                    'fileNum': line[4].text,  # 发文字号
+                    'columnName': line[2].text,  # 发文机构
+                    'classNames': line[1].text,  # 主题分类],  # 主题分类
+                    'createDate': line[3].text,  # 发文时间
+                    'content': ''  # 文章内容
+                }
+                process_data.append(record)
 
-    driver.quit()
-    print('链接爬取完成')
+            try:
+                driver.find_element(By.CSS_SELECTOR, '.btn-next[disabled="disabled"]')
+                break
+            except NoSuchElementException:
+                page = driver.find_element(By.CLASS_NAME, 'btn-next')
+                driver.execute_script("arguments[0].click();", page)
+                wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".el-loading-mask[style='display: none;']")))
+
+    finally:
+        driver.quit()
+        print('链接爬取完成')
     return process_data, len(process_data)
 
 

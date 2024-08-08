@@ -24,58 +24,59 @@ def initialize_driver():
 def get_url(policy):
     url = f'https://www.fujian.gov.cn/zwgk/zcwjk/main.htm?keyWord={policy}'
     driver = initialize_driver()
-    driver.get(url)
+    try:
+        driver.get(url)
 
-    wait = WebDriverWait(driver, 5)
-    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.clearflx.mar_t50[style="display: none;"]')))
-
-    element = driver.find_element(By.CSS_SELECTOR, '[barrier-free-idx="312"]')
-    driver.execute_script("arguments[0].click();", element)
-    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.clearflx.mar_t50[style="display: none;"]')))
-
-    total = driver.find_element(By.XPATH, "//span[@class='show']//em").text
-    process_data = []
-    page_count = math.ceil(int(total)/10)
-    k = page_count+2 if page_count < 7 else 9
-    page = driver.find_element(By.XPATH, f'/html/body/div/div[4]/div/div/div[3]/div[2]/div/div[13]/div/div[1]/a[{k}]')
-
-    for count in range(1, page_count+1):
-        print(f'开始爬取第{count}页链接')
-        poli = driver.find_elements(By.CLASS_NAME, 'wjk-item')
-
-        for elements in poli:
-            line = elements.find_element(By.CLASS_NAME, 'jsq').find_elements(By.TAG_NAME, 'a')
-
-            if len(line) == 3:
-                line1 = line[0].get_attribute('title')
-                line2 = line[1].get_attribute('title')
-            elif len(line) == 2:
-                if bool(re.search(r'\d', line[0].get_attribute('title'))):
-                    line1 = ''
-                    line2 = line[0].get_attribute('title')
-                else:
-                    line1 = line[0].get_attribute('title')
-                    line2 = ''
-            else:
-                line1 = line2 = ''
-
-            record = {
-                'link': elements.find_element(By.TAG_NAME, 'a').get_attribute('href'),  # 链接
-                'title': elements.find_element(By.TAG_NAME, 'a').get_attribute('title'),  # 标题
-                'fileNum': line2,  # 发文字号
-                'columnName': line1,  # 发文机构
-                'classNames': '',  # 主题分类
-                'createDate': line[-1].text,  # 发文时间
-                'content': ''  # 文章内容
-            }
-
-            process_data.append(record)
-
-        driver.execute_script("arguments[0].click();", page)
+        wait = WebDriverWait(driver, 5)
         wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.clearflx.mar_t50[style="display: none;"]')))
 
-    driver.quit()
-    print('链接爬取完成')
+        element = driver.find_element(By.CSS_SELECTOR, '[barrier-free-idx="312"]')
+        driver.execute_script("arguments[0].click();", element)
+        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.clearflx.mar_t50[style="display: none;"]')))
+
+        total = driver.find_element(By.XPATH, "//span[@class='show']//em").text
+        process_data = []
+        page_count = math.ceil(int(total)/10)
+        k = page_count+2 if page_count < 7 else 9
+        page = driver.find_element(By.XPATH, f'/html/body/div/div[4]/div/div/div[3]/div[2]/div/div[13]/div/div[1]/a[{k}]')
+
+        for count in range(1, page_count+1):
+            print(f'开始爬取第{count}页链接')
+            poli = driver.find_elements(By.CLASS_NAME, 'wjk-item')
+
+            for elements in poli:
+                line = elements.find_element(By.CLASS_NAME, 'jsq').find_elements(By.TAG_NAME, 'a')
+
+                if len(line) == 3:
+                    line1 = line[0].get_attribute('title')
+                    line2 = line[1].get_attribute('title')
+                elif len(line) == 2:
+                    if bool(re.search(r'\d', line[0].get_attribute('title'))):
+                        line1 = ''
+                        line2 = line[0].get_attribute('title')
+                    else:
+                        line1 = line[0].get_attribute('title')
+                        line2 = ''
+                else:
+                    line1 = line2 = ''
+
+                record = {
+                    'link': elements.find_element(By.TAG_NAME, 'a').get_attribute('href'),  # 链接
+                    'title': elements.find_element(By.TAG_NAME, 'a').get_attribute('title'),  # 标题
+                    'fileNum': line2,  # 发文字号
+                    'columnName': line1,  # 发文机构
+                    'classNames': '',  # 主题分类
+                    'createDate': line[-1].text,  # 发文时间
+                    'content': ''  # 文章内容
+                }
+
+                process_data.append(record)
+
+            driver.execute_script("arguments[0].click();", page)
+            wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.clearflx.mar_t50[style="display: none;"]')))
+    finally:
+        driver.quit()
+        print('链接爬取完成')
     return process_data, len(process_data)
 
 

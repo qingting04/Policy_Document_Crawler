@@ -24,51 +24,52 @@ def get_url(policy):
            f"&govWorkBean=%257B%257D&sonSiteCode=&areaSearchFlag=-1&secondSearchWords=&topical=&pubName=&countKey=0"
            f"&uc=0&isSonSite=false&left_right_index=0")
     driver = initialize_undetected_driver()
-    driver.get(url)
-    wait = WebDriverWait(driver, 5)
-    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'leftSide-layer.fl')))
+    try:
+        driver.get(url)
+        wait = WebDriverWait(driver, 5)
+        wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'leftSide-layer.fl')))
 
-    process_data = []
-    count = 1
-    while True:
+        process_data = []
+        count = 1
+        while True:
 
-        print(f'开始爬取第{count}页链接')
-        count += 1
+            print(f'开始爬取第{count}页链接')
+            count += 1
 
-        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.zhezhao[style="display: none;"]')))
-        poli = driver.find_elements(By.CLASS_NAME, 'wordGuide.Residence-permit')
+            wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.zhezhao[style="display: none;"]')))
+            poli = driver.find_elements(By.CLASS_NAME, 'wordGuide.Residence-permit')
 
-        for elements in poli:
-            try:
-                line = elements.find_elements(By.CLASS_NAME, 'color555')
-                if len(line) == 0:
+            for elements in poli:
+                try:
+                    line = elements.find_elements(By.CLASS_NAME, 'color555')
+                    if len(line) == 0:
+                        fileNum = ''
+                    else:
+                        fileNum = line[2].text
+                except NoSuchElementException:
                     fileNum = ''
-                else:
-                    fileNum = line[2].text
+                record = {
+                    'link': elements.find_element(By.TAG_NAME, "a").get_attribute('href'),  # 链接
+                    'title': elements.find_element(By.TAG_NAME, "a").text,  # 标题
+                    'fileNum': fileNum,  # 发文字号
+                    'columnName': elements.find_element(By.CLASS_NAME, 'sourceDateFont.permitU').text,  # 发文机构
+                    'classNames': elements.find_element(By.TAG_NAME, "span").text,  # 主题分类
+                    'createDate': elements.find_element(By.CLASS_NAME, 'sourceDateFont').text,  # 发文时间
+                    'content': ''  # 文章内容
+                }
+
+                process_data.append(record)
+
+            wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(@class, 'next')]")))
+            try:
+                driver.find_element(By.CLASS_NAME, 'next.disabled')
+                break
             except NoSuchElementException:
-                fileNum = ''
-            record = {
-                'link': elements.find_element(By.TAG_NAME, "a").get_attribute('href'),  # 链接
-                'title': elements.find_element(By.TAG_NAME, "a").text,  # 标题
-                'fileNum': fileNum,  # 发文字号
-                'columnName': elements.find_element(By.CLASS_NAME, 'sourceDateFont.permitU').text,  # 发文机构
-                'classNames': elements.find_element(By.TAG_NAME, "span").text,  # 主题分类
-                'createDate': elements.find_element(By.CLASS_NAME, 'sourceDateFont').text,  # 发文时间
-                'content': ''  # 文章内容
-            }
-
-            process_data.append(record)
-
-        wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(@class, 'next')]")))
-        try:
-            driver.find_element(By.CLASS_NAME, 'next.disabled')
-            break
-        except NoSuchElementException:
-            driver.find_element(By.CLASS_NAME, 'next').click()
-            wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'leftSide-layer.fl')))
-
-    driver.quit()
-    print('链接爬取完成')
+                driver.find_element(By.CLASS_NAME, 'next').click()
+                wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'leftSide-layer.fl')))
+    finally:
+        driver.quit()
+        print('链接爬取完成')
     return process_data, len(process_data)
 
 

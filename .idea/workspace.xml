@@ -14,8 +14,13 @@
       <change beforePath="$PROJECT_DIR$/province/GuangDong.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/GuangDong.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/GuangXi.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/GuangXi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/GuiZhou.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/GuiZhou.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/GuoWuYuan.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/GuoWuYuan.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/HeBei.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/HeBei.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/HeNan.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/HeNan.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/HeiLongJiang.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/HeiLongJiang.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/HuNan.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/HuNan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/JiangSu.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/JiangSu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/JiangXi.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/JiangXi.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +74,12 @@
     "Python.GuoWuYuan.executor": "Run",
     "Python.HaiNan.executor": "Run",
     "Python.HeBei.executor": "Run",
+    "Python.HeNan.executor": "Run",
     "Python.HeiLongJiang.executor": "Run",
+    "Python.HuBei.executor": "Run",
+    "Python.HuNan.executor": "Run",
+    "Python.JiangSu.executor": "Run",
+    "Python.JiangXi.executor": "Run",
     "Python.demo.executor": "Run",
     "Python.main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -143,7 +153,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722954781116</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="无">
+      <option name="closed" value="true" />
+      <created>1723048570839</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1723048570839</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -163,6 +181,13 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/demo.py</url>
+          <line>26</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">

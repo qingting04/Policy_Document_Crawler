@@ -26,39 +26,40 @@ def get_url(policy):
         f'&sign=d8c59723-1595-4f7c-a3e1-1ba32c274682&pageSize=10&seniorBox=0&advancedFilters=&isAdvancedSearch=0'
     )
     driver = initialize_driver()
-    driver.get(url)
-    wait = WebDriverWait(driver, 5)
-    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'basic_result_content')))
+    try:
+        driver.get(url)
+        wait = WebDriverWait(driver, 5)
+        wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'basic_result_content')))
 
-    process_data = []
-    count = 1
-    while True:
-        print(f'开始爬取第{count}页链接')
-        count += 1
-        poli = driver.find_elements(By.CLASS_NAME, 'item.is-policy')
+        process_data = []
+        count = 1
+        while True:
+            print(f'开始爬取第{count}页链接')
+            count += 1
+            poli = driver.find_elements(By.CLASS_NAME, 'item.is-policy')
 
-        for elements in poli:
-            record = {
-                'link': elements.find_element(By.TAG_NAME, "a").get_attribute('href'),  # 链接
-                'title': elements.find_element(By.TAG_NAME, "a").text,  # 标题
-                'fileNum': '',  # 发文字号
-                'columnName': '',  # 发文机构
-                'classNames': '',  # 主题分类
-                'createDate': '',  # 发文时间
-                'content': ''  # 文章内容
-            }
-            process_data.append(record)
+            for elements in poli:
+                record = {
+                    'link': elements.find_element(By.TAG_NAME, "a").get_attribute('href'),  # 链接
+                    'title': elements.find_element(By.TAG_NAME, "a").text,  # 标题
+                    'fileNum': '',  # 发文字号
+                    'columnName': '',  # 发文机构
+                    'classNames': '',  # 主题分类
+                    'createDate': '',  # 发文时间
+                    'content': ''  # 文章内容
+                }
+                process_data.append(record)
 
-        wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(@class, 'layui-laypage-next')]")))
-        try:
-            driver.find_element(By.CSS_SELECTOR, '.layui-laypage-next.layui-disabled')
-            break
-        except NoSuchElementException:
-            driver.find_element(By.CLASS_NAME, 'layui-laypage-next').click()
-            time.sleep(1)
-
-    driver.quit()
-    print('链接爬取完成')
+            wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(@class, 'layui-laypage-next')]")))
+            try:
+                driver.find_element(By.CSS_SELECTOR, '.layui-laypage-next.layui-disabled')
+                break
+            except NoSuchElementException:
+                driver.find_element(By.CLASS_NAME, 'layui-laypage-next').click()
+                time.sleep(1)
+    finally:
+        driver.quit()
+        print('链接爬取完成')
     return process_data, len(process_data)
 
 

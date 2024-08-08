@@ -25,61 +25,62 @@ def initialize_driver():
 def get_url(policy):
     url = f'https://www.beijing.gov.cn/so/s?siteCode=1100000088&tab=zcfg&qt={policy}'
     driver = initialize_driver()
-    driver.get(url)
-    wait = WebDriverWait(driver, 5)
-    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'middle-con-left-top')))
+    try:
+        driver.get(url)
+        wait = WebDriverWait(driver, 5)
+        wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'middle-con-left-top')))
 
-    lable = driver.find_elements(By.CSS_SELECTOR, '.position-con.item-choose')
-    js = 'arguments[0].setAttribute(arguments[1], arguments[2])'
-    driver.execute_script(js, lable[0], 'class', 'position-con item-choose')
-    driver.execute_script(js, lable[1], 'class', 'position-con item-choose item-choose-on')
+        lable = driver.find_elements(By.CSS_SELECTOR, '.position-con.item-choose')
+        js = 'arguments[0].setAttribute(arguments[1], arguments[2])'
+        driver.execute_script(js, lable[0], 'class', 'position-con item-choose')
+        driver.execute_script(js, lable[1], 'class', 'position-con item-choose item-choose-on')
 
-    process_data = []
-    count = 1
-    while True:
-        print(f'开始爬取第{count}页链接')
-        count += 1
-        poli = driver.find_elements(By.CLASS_NAME, 'search-result')
+        process_data = []
+        count = 1
+        while True:
+            print(f'开始爬取第{count}页链接')
+            count += 1
+            poli = driver.find_elements(By.CLASS_NAME, 'search-result')
 
-        for elements in poli:
-            record = {
-                'link': elements.find_element(By.TAG_NAME, "a").get_attribute('href'),  # 链接
-                'title': elements.find_element(By.TAG_NAME, "a").text,  # 标题
-                'fileNum': '',  # 发文字号
-                'columnName': '',  # 发文机构
-                'classNames': '',  # 主题分类
-                'createDate': '',  # 发文时间
-                'content': ''  # 文章内容
-            }
+            for elements in poli:
+                record = {
+                    'link': elements.find_element(By.TAG_NAME, "a").get_attribute('href'),  # 链接
+                    'title': elements.find_element(By.TAG_NAME, "a").text,  # 标题
+                    'fileNum': '',  # 发文字号
+                    'columnName': '',  # 发文机构
+                    'classNames': '',  # 主题分类
+                    'createDate': '',  # 发文时间
+                    'content': ''  # 文章内容
+                }
 
-            table = elements.find_elements(By.CLASS_NAME, "row-content")
-            while len(table) < 4:
-                mock_element = MagicMock(spec=WebElement)
-                mock_element.text = ''
-                table.insert(0, mock_element)
+                table = elements.find_elements(By.CLASS_NAME, "row-content")
+                while len(table) < 4:
+                    mock_element = MagicMock(spec=WebElement)
+                    mock_element.text = ''
+                    table.insert(0, mock_element)
 
-            for index, item in enumerate(table):
-                if index == 0:
-                    record['fileNum'] = item.text
-                elif index == 1:
-                    record['columnName'] = item.text
-                elif index == 2:
-                    record['classNames'] = item.text
-                elif index == 3:
-                    record['createDate'] = item.text
+                for index, item in enumerate(table):
+                    if index == 0:
+                        record['fileNum'] = item.text
+                    elif index == 1:
+                        record['columnName'] = item.text
+                    elif index == 2:
+                        record['classNames'] = item.text
+                    elif index == 3:
+                        record['createDate'] = item.text
 
-            process_data.append(record)
+                process_data.append(record)
 
-        wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(@class, 'next')]")))
-        try:
-            driver.find_element(By.CSS_SELECTOR, '.next.disabled')
-            break
-        except NoSuchElementException:
-            driver.find_element(By.CLASS_NAME, 'next').click()
-            time.sleep(0.5)
-
-    driver.quit()
-    print('链接爬取完成')
+            wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(@class, 'next')]")))
+            try:
+                driver.find_element(By.CSS_SELECTOR, '.next.disabled')
+                break
+            except NoSuchElementException:
+                driver.find_element(By.CLASS_NAME, 'next').click()
+                time.sleep(0.5)
+    finally:
+        driver.quit()
+        print('链接爬取完成')
     return process_data, len(process_data)
 
 
