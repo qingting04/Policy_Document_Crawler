@@ -74,7 +74,7 @@ def get_content(data_process):
                 print(f"第{attempt + 1}次访问链接失败: {url}")
         return False
 
-    xpath = ("//*[@class='TRS_Editor'] | //*[@class='content'] | //*[@class='border-table noneBorder pages_content' | "
+    xpath = ("//*[@class='TRS_Editor'] | //*[@class='content'] | //*[@class='border-table noneBorder pages_content'] | "
              "//*[@class='warp']/table[2] | //*[@id='UCAP-CONTENT'] | //*[@class='content_body_box']")
     try:
         count = 0

@@ -39,7 +39,7 @@ def get_all(data_unprocess):
                 'fileNum': data.get('docno', ''),
                 'columnName': data.get('publisher', ''),
                 'classNames': data.get('zupeitype', ''),
-                'createDate': re.search(r'\d{4}-\d{2}-\d{2}', data.get('scrp', '')),
+                'createDate': re.search(r'\d{4}-\d{2}-\d{2}', data.get('scrp', '')).group(),
                 'content': data.get('zc_doccontent', '')
             }
             data_process.append(record)

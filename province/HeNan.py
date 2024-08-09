@@ -54,7 +54,7 @@ def get_all(data_unprocess):
                 'fileNum': data.get('docNum', ''),
                 'columnName': data.get('docAgency', ''),
                 'classNames': data.get('keyword', ''),
-                'createDate': re.search(r'\d{4}-\d{2}-\d{2}', data.get('createDate', '')),
+                'createDate': re.search(r'\d{4}-\d{2}-\d{2}', data.get('createDate', '')).group(),
                 'content': data.get('content', '')
             }
             data_process.append(record)

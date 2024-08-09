@@ -57,7 +57,6 @@ def get_all(policy):
                     'createDate': line[7].text,  # 发文时间
                     'content': elements.find_element(By.CLASS_NAME, 'main_document').text  # 文章内容
                 }
-                print(record)
                 process_data.append(record)
 
             try:
