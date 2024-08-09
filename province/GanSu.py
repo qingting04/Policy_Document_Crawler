@@ -1,11 +1,11 @@
 import time
 from urllib.parse import quote
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from writer import mysql_writer
+#from writer import mysql_writer
 
 
 def initialize_undetected_driver():
@@ -27,15 +27,15 @@ def get_url(policy):
     try:
         driver.get(url)
         wait = WebDriverWait(driver, 5)
-        wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'leftSide-layer.fl')))
+        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.zhezhao[style="display: none;"]')))
 
         process_data = []
         count = 1
         while True:
-
             print(f'开始爬取第{count}页链接')
             count += 1
 
+            time.sleep(0.5)
             wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.zhezhao[style="display: none;"]')))
             poli = driver.find_elements(By.CLASS_NAME, 'wordGuide.Residence-permit')
 
@@ -80,7 +80,10 @@ def get_content(data_process):
     def retry_get(url):
         for attempt in range(3):
             try:
-                driver.get(url)
+                try:
+                    driver.get(url)
+                except WebDriverException:
+                    break
                 wait = WebDriverWait(driver, 2)
                 wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'detailContent')))
                 return True

@@ -1,6 +1,4 @@
-import re
 import time
-from urllib.parse import quote
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.chrome.service import Service
@@ -29,8 +27,8 @@ def initialize_driver(policy, url):
     submit.click()
     wait.until(EC.presence_of_element_located((By.XPATH, "//div[@class='czkj-filter']/div[2]")))
     zcwj = driver.find_element(By.XPATH, "//div[@class='czkj-filter']/div[1]/div[3]")
-    zcwj.click()
     xgd = driver.find_element(By.XPATH, "//div[@class='czkj-filter']/div[3]/div[2]")
+    zcwj.click()
     xgd.click()
     time.sleep(0.2)
     return driver
@@ -42,8 +40,7 @@ def get_total(policy):
     try:
         while True:
             try:
-                page = driver.find_element(By.CLASS_NAME, 'recommend-more')
-                page.click()
+                driver.find_element(By.CLASS_NAME, 'recommend-more').click()
                 time.sleep(0.5)
             except NoSuchElementException:
                 poli = driver.find_elements(By.CLASS_NAME, 'recommend-item')
@@ -58,20 +55,19 @@ def get_all(policy):
     driver = initialize_driver(policy, url)
     wait = WebDriverWait(driver, 20)
 
-    count = 0
+    count = a = 0
     process_data = []
-    visited_title = set()
     xpath = "//*[@class='pc-policy-title text-center'] | //*[@class='pc-read-title']"
 
     try:
         while True:
+            time.sleep(0.5)
             poli = driver.find_elements(By.CLASS_NAME, 'recommend-item')
 
-            for elements in poli:
-                title = elements.find_element(By.CLASS_NAME, 'recommend-title').text
-                if title not in visited_title:
-                    elements.find_element(By.CLASS_NAME, 'recommend-title').click()
-                    visited_title.add(title)
+            for elements in poli[a:]:
+                elements.find_element(By.CLASS_NAME, 'recommend-title').click()
+            a = len(poli)
+            print(a)
 
             windows_handles = driver.window_handles
             main_window_handle = driver.current_window_handle
@@ -113,8 +109,7 @@ def get_all(policy):
             driver.switch_to.window(main_window_handle)
 
             try:
-                page = driver.find_element(By.CLASS_NAME, 'recommend-more')
-                page.click()
+                driver.find_element(By.CLASS_NAME, 'recommend-more').click()
                 time.sleep(0.5)
             except NoSuchElementException:
                 break

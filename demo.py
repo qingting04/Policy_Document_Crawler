@@ -20,12 +20,6 @@ def initialize_driver():
     return driver
 
 
-url = "https://www.jiangxi.gov.cn/art/2023/1/19/art_14236_4339911.html"
-driver = initialize_driver()
-driver.get(url)
-time.sleep(2)
-line = driver.find_elements(By.XPATH, "//div[@class='screen xxgkTitle']//td")
-print(line)
-line = [i.text for i in line]
-print(line)
-time.sleep(100)
+url = "https://www.nmg.gov.cn/nmsearch/openSearch/zcwjk/getZcList.do?keywords=%E8%90%A5%E5%95%86%E7%8E%AF%E5%A2%83&docno=&pageSize=10&pageNum=1&sort=&chnId=&docnotype=&publisher=&cityName=&doctype=0&zcYear=&cdesc=&wenzhong=&startTime=&endTime="
+response = requests.get(url)
+print(response.json())

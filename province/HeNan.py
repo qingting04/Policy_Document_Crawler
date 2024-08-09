@@ -1,12 +1,10 @@
 import re
 import time
 from urllib.parse import quote
-from writer import mysql_writer
 import undetected_chromedriver as uc
 import json
 from selenium.webdriver.common.by import By
-
-import requests
+from writer import mysql_writer
 
 
 def initialize_undetected_driver():
@@ -14,7 +12,7 @@ def initialize_undetected_driver():
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     driver = uc.Chrome(driver_executable_path=r'C:\Program Files\Google\Chrome\Application\chromedriver.exe',
-                       options=options)
+                       options=options, use_subprocess=False)
     return driver
 
 

@@ -2,7 +2,7 @@ import math
 import re
 from urllib.parse import quote
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -12,7 +12,7 @@ from writer import mysql_writer
 
 def initialize_driver():
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
+    #options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(
@@ -34,14 +34,12 @@ def get_url(policy):
         driver.execute_script("arguments[0].click();", element)
         wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.clearflx.mar_t50[style="display: none;"]')))
 
-        total = driver.find_element(By.XPATH, "//span[@class='show']//em").text
         process_data = []
-        page_count = math.ceil(int(total)/10)
-        k = page_count+2 if page_count < 7 else 9
-        page = driver.find_element(By.XPATH, f'/html/body/div/div[4]/div/div/div[3]/div[2]/div/div[13]/div/div[1]/a[{k}]')
+        count = 1
 
-        for count in range(1, page_count+1):
+        while True:
             print(f'开始爬取第{count}页链接')
+            count += 1
             poli = driver.find_elements(By.CLASS_NAME, 'wjk-item')
 
             for elements in poli:
@@ -72,8 +70,14 @@ def get_url(policy):
 
                 process_data.append(record)
 
-            driver.execute_script("arguments[0].click();", page)
-            wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.clearflx.mar_t50[style="display: none;"]')))
+            page = driver.find_elements(By.XPATH, "//div[@class='fy_tit_l']/a")[-1]
+            if page.get_attribute('class') == 'next':
+                print(page.get_attribute('class'))
+                driver.execute_script("arguments[0].click();", page)
+                wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.clearflx.mar_t50[style="display: none;"]')))
+            else:
+                break
+
     finally:
         driver.quit()
         print('链接爬取完成')
@@ -87,7 +91,10 @@ def get_content(data_process):
     def retry_get(url):
         for attempt in range(3):
             try:
-                driver.get(url)
+                try:
+                    driver.get(url)
+                except WebDriverException:
+                    break
                 wait = WebDriverWait(driver, 2)
                 wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
                 return True

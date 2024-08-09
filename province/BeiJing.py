@@ -1,11 +1,9 @@
 import time
-from unittest.mock import MagicMock
 from urllib.parse import quote
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from writer import mysql_writer
@@ -43,31 +41,19 @@ def get_url(policy):
             poli = driver.find_elements(By.CLASS_NAME, 'search-result')
 
             for elements in poli:
+                table = elements.find_elements(By.CLASS_NAME, "row-content")
+                line = [i.text for i in table]
+                while len(line) < 4:
+                    line.insert(0, '')
                 record = {
                     'link': elements.find_element(By.TAG_NAME, "a").get_attribute('href'),  # 链接
                     'title': elements.find_element(By.TAG_NAME, "a").text,  # 标题
-                    'fileNum': '',  # 发文字号
-                    'columnName': '',  # 发文机构
-                    'classNames': '',  # 主题分类
-                    'createDate': '',  # 发文时间
+                    'fileNum': line[0],  # 发文字号
+                    'columnName': line[1],  # 发文机构
+                    'classNames': line[2],  # 主题分类
+                    'createDate': line[3],  # 发文时间
                     'content': ''  # 文章内容
                 }
-
-                table = elements.find_elements(By.CLASS_NAME, "row-content")
-                while len(table) < 4:
-                    mock_element = MagicMock(spec=WebElement)
-                    mock_element.text = ''
-                    table.insert(0, mock_element)
-
-                for index, item in enumerate(table):
-                    if index == 0:
-                        record['fileNum'] = item.text
-                    elif index == 1:
-                        record['columnName'] = item.text
-                    elif index == 2:
-                        record['classNames'] = item.text
-                    elif index == 3:
-                        record['createDate'] = item.text
 
                 process_data.append(record)
 
@@ -91,7 +77,10 @@ def get_content(data_process):
     def retry_get(url):
         for attempt in range(3):
             try:
-                driver.get(url)
+                try:
+                    driver.get(url)
+                except WebDriverException:
+                    break
                 wait = WebDriverWait(driver, 2)
                 wait.until(EC.presence_of_element_located((By.ID, 'mainText')))
                 return True
