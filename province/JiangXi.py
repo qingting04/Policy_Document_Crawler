@@ -22,8 +22,9 @@ def initialize_driver():
 
 
 def get_url(policy):
-    url = (f'https://sousuo.jiangxi.gov.cn/jsearchfront/search.do?websiteid=360000000000000&tpl=49&q={policy}'
-           '&filenumber=*?*?*%E5%8F%B7&searchid=1592&pos=title')
+    url = (f'https://sousuo.jiangxi.gov.cn/jsearchfront/search.do?websiteid=360000000000000&tpl=49&q={policy}&p=1&pg='
+           f'&pos=title&searchid=981&oq=&eq=&begin=&end=')
+
     driver = initialize_driver()
 
     try:
@@ -36,22 +37,35 @@ def get_url(policy):
         while True:
             try:
                 driver.find_element(By.CSS_SELECTOR, ".uploadmore[style='display: none;']")
-                poli = driver.find_elements(By.CLASS_NAME, 'jcse-result-box')
+                poli1 = driver.find_elements(By.CLASS_NAME, 'jcse-result-box')
+                poli2 = driver.find_elements(By.CLASS_NAME, 'jcse-result-box.news-result')
                 print('页面全部展开')
                 break
             except NoSuchElementException:
                 page.click()
                 time.sleep(1)
 
-        for elements in poli:
-            line = elements.find_elements(By.XPATH, "//table[@class='jcse-service-table']//td")
+        for elements1 in poli1:
+            line = elements1.find_elements(By.XPATH, "//table[@class='jcse-service-table']//td")
             record = {
-                'link': elements.find_element(By.TAG_NAME, 'a').get_attribute('href'),  # 链接
-                'title': elements.find_element(By.TAG_NAME, 'a').text,  # 标题
+                'link': elements1.find_element(By.TAG_NAME, 'a').get_attribute('href'),  # 链接
+                'title': elements1.find_element(By.TAG_NAME, 'a').text,  # 标题
                 'fileNum': line[3].text,  # 发文字号
                 'columnName': line[5].text,  # 发文机构
                 'classNames': '',  # 主题分类
                 'createDate': line[7].text,  # 发文时间
+                'content': ''  # 文章内容
+            }
+            process_data.append(record)
+
+        for elements2 in poli2:
+            record = {
+                'link': elements2.find_element(By.TAG_NAME, 'a').get_attribute('href'),  # 链接
+                'title': elements2.find_element(By.TAG_NAME, 'a').text,  # 标题
+                'fileNum': '',  # 发文字号
+                'columnName': '',  # 发文机构
+                'classNames': '',  # 主题分类
+                'createDate': '',  # 发文时间
                 'content': ''  # 文章内容
             }
             process_data.append(record)
@@ -75,12 +89,14 @@ def get_content(data_process):
                 except WebDriverException:
                     break
                 wait = WebDriverWait(driver, 2)
-                wait.until(EC.presence_of_element_located((By.ID, 'zoom')))
+                wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
                 return True
             except TimeoutException as e:
                 print(f"第{attempt + 1}次访问链接失败: {url}")
         return False
 
+    xpath = ("//*[@id='zoom'] | //*[@class='____article_content'] | //*[@class='Three_xilan_02'] | //*[@id='js_content'] | "
+             "//*[@class='textlive'] | //*[@id='UCAP-CONTENT']")
     try:
         for item in data_process:
             if retry_get(item['link']):
@@ -91,7 +107,7 @@ def get_content(data_process):
                 except NoSuchElementException:
                     pass
                 try:
-                    item['content'] = driver.find_element(By.ID, 'zoom').text
+                    item['content'] = driver.find_element(By.XPATH, xpath).text
                 except NoSuchElementException:
                     item['content'] = '获取内容失败'
             else:
@@ -100,9 +116,6 @@ def get_content(data_process):
 
             count += 1
             print(f'爬取第{count}篇文章')
-            if count % 50 == 0:
-                driver.quit()
-                driver = initialize_driver()
 
     finally:
         driver.quit()
@@ -110,11 +123,12 @@ def get_content(data_process):
     return data_process
 
 
-def main(policy):
+def main(un_policy):
+    policy = quote(un_policy)
     data_process, total = get_url(policy)
-    print(f"贵州共计{total}篇文章")
+    print(f"江西共计{total}篇文章")
     data = get_content(data_process)
-    #mysql_writer('guizhou_wj', data)
+    #mysql_writer('jiangxi_wj', data)
 
 
 if __name__ == "__main__":

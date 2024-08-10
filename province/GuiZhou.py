@@ -49,7 +49,7 @@ def get_url(policy):
                 break
             except NoSuchElementException:
                 page.click()
-                time.sleep(1)
+                wait.until(EC.invisibility_of_element_located((By.CLASS_NAME, 'layui-layer-content.layui-layer-loading2')))
 
         for elements in poli:
             record = {
@@ -104,9 +104,6 @@ def get_content(data_process):
 
             count += 1
             print(f'爬取第{count}篇文章')
-            if count % 50 == 0:
-                driver.quit()
-                driver = initialize_driver()
 
     finally:
         driver.quit()

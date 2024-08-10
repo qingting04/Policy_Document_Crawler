@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c8c374b-06fd-4f96-89f9-0c90c75a4fb2" name="更改" comment="无">
-      <change beforePath="$PROJECT_DIR$/.idea/Policy_Document_Crawler.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Policy_Document_Crawler.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/demo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/AnHui.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/AnHui.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/BeiJing.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/BeiJing.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/ChongQing.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/ChongQing.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/FuJian.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/FuJian.py" afterDir="false" />
@@ -16,14 +15,18 @@
       <change beforePath="$PROJECT_DIR$/province/GuangDong.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/GuangDong.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/GuangXi.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/GuangXi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/GuiZhou.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/GuiZhou.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/province/HeNan.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/HeNan.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/province/HeiLongJiang.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/HeiLongJiang.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/province/HuBei.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/HuBei.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/GuoWuYuan.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/GuoWuYuan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/HaiNan.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/HaiNan.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/HuNan.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/HuNan.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/JiLin.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/JiLin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/JiangSu.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/JiangSu.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/JiangXi.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/JiangXi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/province/NeiMengGu.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/NeiMengGu.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/NingXia.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/NingXia.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/QingHai.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/QingHai.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/ShanDong.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/ShanDong.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/ShanXi1.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/ShanXi1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/ShangHai.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/ShangHai.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/TianJin.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/TianJin.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,38 +67,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.AnHui.executor": "Run",
-    "Python.BeiJing.executor": "Run",
-    "Python.ChongQing.executor": "Run",
-    "Python.FuJian.executor": "Debug",
-    "Python.GanSu.executor": "Run",
-    "Python.GuangDong.executor": "Run",
-    "Python.GuangXi.executor": "Run",
-    "Python.GuiZhou.executor": "Run",
-    "Python.GuoWuYuan.executor": "Run",
-    "Python.HaiNan.executor": "Run",
-    "Python.HeBei.executor": "Run",
-    "Python.HeNan.executor": "Run",
-    "Python.HeiLongJiang.executor": "Run",
-    "Python.HuBei.executor": "Run",
-    "Python.HuNan.executor": "Run",
-    "Python.JiLin.executor": "Run",
-    "Python.JiangSu.executor": "Run",
-    "Python.JiangXi.executor": "Run",
-    "Python.NeiMengGu.executor": "Run",
-    "Python.NingXia.executor": "Run",
-    "Python.demo.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.writer.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/PyCharm Community Edition 2023.3.4/project/DataStructure",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.AnHui.executor&quot;: &quot;Run&quot;,
+    &quot;Python.BeiJing.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ChongQing.executor&quot;: &quot;Run&quot;,
+    &quot;Python.FuJian.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.GanSu.executor&quot;: &quot;Run&quot;,
+    &quot;Python.GuangDong.executor&quot;: &quot;Run&quot;,
+    &quot;Python.GuangXi.executor&quot;: &quot;Run&quot;,
+    &quot;Python.GuiZhou.executor&quot;: &quot;Run&quot;,
+    &quot;Python.GuoWuYuan.executor&quot;: &quot;Run&quot;,
+    &quot;Python.HaiNan.executor&quot;: &quot;Run&quot;,
+    &quot;Python.HeBei.executor&quot;: &quot;Run&quot;,
+    &quot;Python.HeNan.executor&quot;: &quot;Run&quot;,
+    &quot;Python.HeiLongJiang.executor&quot;: &quot;Run&quot;,
+    &quot;Python.HuBei.executor&quot;: &quot;Run&quot;,
+    &quot;Python.HuNan.executor&quot;: &quot;Run&quot;,
+    &quot;Python.JiLin.executor&quot;: &quot;Run&quot;,
+    &quot;Python.JiangSu.executor&quot;: &quot;Run&quot;,
+    &quot;Python.JiangXi.executor&quot;: &quot;Run&quot;,
+    &quot;Python.NeiMengGu.executor&quot;: &quot;Run&quot;,
+    &quot;Python.NingXia.executor&quot;: &quot;Run&quot;,
+    &quot;Python.QingHai.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ShanDong.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ShanXi1.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ShangHai.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.TianJin.executor&quot;: &quot;Run&quot;,
+    &quot;Python.demo.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.writer.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/PyCharm Community Edition 2023.3.4/project/DataStructure&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Policy_Document_Crawler" />
@@ -176,7 +184,23 @@
       <option name="project" value="LOCAL" />
       <updated>1723118356315</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="无">
+      <option name="closed" value="true" />
+      <created>1723213130091</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1723213130091</updated>
+    </task>
+    <task id="LOCAL-00007" summary="无">
+      <option name="closed" value="true" />
+      <created>1723216012702</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1723216012702</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

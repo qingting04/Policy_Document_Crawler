@@ -104,9 +104,6 @@ def get_content(data_process):
 
             count += 1
             print(f'爬取第{count}篇文章')
-            if count % 50 == 0:
-                driver.quit()
-                driver = initialize_driver()
 
     finally:
         print('爬取文章完成')

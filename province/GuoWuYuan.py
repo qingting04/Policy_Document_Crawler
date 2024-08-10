@@ -4,7 +4,7 @@ import time
 from urllib.parse import quote
 from selenium import webdriver
 import requests
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -80,7 +80,10 @@ def get_content(data_process):
     def retry_get(url):
         for attempt in range(3):
             try:
-                driver.get(url)
+                try:
+                    driver.get(url)
+                except WebDriverException:
+                    break
                 wait = WebDriverWait(driver, 2)
                 wait.until(EC.presence_of_element_located((By.ID, 'UCAP-CONTENT')))
                 return True
@@ -102,10 +105,6 @@ def get_content(data_process):
 
             count += 1
             print(f'爬取第{count}篇文章')
-            print(item)
-            if count % 50 == 0:
-                driver.quit()
-                driver = initialize_driver()
 
     finally:
         print('文章爬取完成')
