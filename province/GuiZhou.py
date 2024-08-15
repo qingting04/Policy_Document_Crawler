@@ -72,9 +72,6 @@ def get_url(policy):
 def get_content(data_process):
     driver = initialize_driver()
     print('开始爬取文章')
-    xpath = ("//*[contains(@class, 'TRS_UEDITOR trs_paper_default') or "
-             "contains(@class, 'mianbox') or "
-             "contains(@class, 'content')]")
     count = 0
 
     def retry_get(url):
@@ -91,6 +88,9 @@ def get_content(data_process):
                 print(f"第{attempt + 1}次访问链接失败: {url}")
         return False
 
+    xpath = ("//*[contains(@class, 'TRS_UEDITOR trs_paper_default') or "
+             "contains(@class, 'mianbox') or "
+             "contains(@class, 'content')]")
     try:
         for item in data_process:
             if retry_get(item['link']):
