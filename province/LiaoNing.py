@@ -12,7 +12,7 @@ from writer import mysql_writer
 
 def initialize_driver():
     options = webdriver.ChromeOptions()
-    #options.add_argument('--headless')
+    options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(
@@ -115,7 +115,7 @@ def main(un_policy):
     print(f"辽宁共计{page}页，{total}篇文章")
     data_process = get_url(policy, page)
     data = get_content(data_process)
-    #mysql_writer('liaoning_wj', data)
+    mysql_writer('liaoning_wj', data)
 
 
 if __name__ == "__main__":

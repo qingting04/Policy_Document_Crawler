@@ -130,7 +130,7 @@ def main(un_policy):
     print(f"广东共计{page}页，{total}篇文章")
     data_process = get_url(page, policy)
     data = get_content(data_process)
-    #mysql_writer('guangdong_wj', data)
+    mysql_writer('guangdong_wj', data)
 
 
 if __name__ == "__main__":

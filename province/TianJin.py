@@ -125,7 +125,7 @@ def main(un_policy):
     unprocess_data = fetch_policy_data(policy, page)
     data_process = process_data(unprocess_data)
     data = get_content(data_process)
-    # mysql_writer('tianjin_wj', data)
+    mysql_writer('tianjin_wj', data)
 
 
 if __name__ == "__main__":

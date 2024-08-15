@@ -5,7 +5,7 @@ import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-#from writer import mysql_writer
+from writer import mysql_writer
 
 
 def initialize_undetected_driver():
@@ -18,11 +18,13 @@ def initialize_undetected_driver():
 
 
 def get_url(policy):
-    url = (f"https://www.gansu.gov.cn/guestweb4/s?searchWord={policy}"
-           f"&column=%25E6%2594%25BF%25E5%258A%25A1%25E5%2585%25AC%25E5%25BC%2580&wordPlace=1&orderBy=0&startTime="
-           f"&endTime=&pageSize=10&pageNum=0&timeStamp=0&siteCode=6200000001&sonSiteCode=&checkHandle=1&strFileType="
-           f"&govWorkBean=%257B%257D&sonSiteCode=&areaSearchFlag=-1&secondSearchWords=&topical=&pubName=&countKey=0"
-           f"&uc=0&isSonSite=false&left_right_index=0")
+    url = (
+        f"https://www.gansu.gov.cn/guestweb4/s?searchWord={policy}"
+        f"&column=%25E6%2594%25BF%25E5%258A%25A1%25E5%2585%25AC%25E5%25BC%2580&wordPlace=1&orderBy=0&startTime="
+        f"&endTime=&pageSize=10&pageNum=0&timeStamp=0&siteCode=6200000001&sonSiteCode=&checkHandle=1&strFileType="
+        f"&govWorkBean=%257B%257D&sonSiteCode=&areaSearchFlag=-1&secondSearchWords=&topical=&pubName=&countKey=0"
+        f"&uc=0&isSonSite=false&left_right_index=0"
+    )
     driver = initialize_undetected_driver()
     try:
         driver.get(url)
@@ -118,7 +120,7 @@ def main(un_policy):
     data_process, total = get_url(policy)
     print(f"甘肃共计{total}篇文章")
     data = get_content(data_process)
-    #mysql_writer('gansu_wj', data)
+    mysql_writer('gansu_wj', data)
 
 
 if __name__ == "__main__":

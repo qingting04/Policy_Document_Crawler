@@ -20,7 +20,7 @@ def initialize_driver():
     return driver
 
 
-url = "https://sheng.so-gov.cn/s?tab=zcwj&siteCode=5300000033&qt=%E8%90%A5%E5%95%86%E7%8E%AF%E5%A2%83"
+url = "https://www.xizang.gov.cn/igs/front/search.jhtml?code=30e4960928e74a14a2c05439d100cfc0&pageNumber=2&pageSize=10&searchWord=%E8%90%A5%E5%95%86%E7%8E%AF%E5%A2%83&siteId=2&type=19"
 driver = initialize_driver()
 driver.get(url)
 print(driver.page_source)

@@ -54,7 +54,7 @@ def main(un_policy):
     print(f'内蒙古共计{page_count}页,{total}篇文章')
     unprocess_data = fetch_policy_data(policy, page_count)
     data = get_all(unprocess_data)
-    # mysql_writer(data, 'neimenggu_wj')
+    mysql_writer('neimenggu_wj', data)
 
 
 if __name__ == '__main__':

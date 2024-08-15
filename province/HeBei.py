@@ -100,7 +100,7 @@ def main(policy):
     total = get_total(policy)
     print(f"河北共计{total}篇文章")
     data = get_all(policy)
-    #mysql_writer('hebei_wj', data)
+    mysql_writer('hebei_wj', data)
 
 
 if __name__ == "__main__":

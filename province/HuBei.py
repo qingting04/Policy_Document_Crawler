@@ -78,7 +78,7 @@ def main(un_policy):
     page, total = get_page_total(policy)
     print(f"湖北共计{page}页，共{total}篇文章")
     data = get_all(policy)
-    #mysql_writer('hubei_wj', data)
+    mysql_writer('hubei_wj', data)
 
 
 if __name__ == "__main__":

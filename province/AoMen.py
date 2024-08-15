@@ -111,7 +111,7 @@ def main(un_policy):
     data_process, total = get_url(policy)
     print(f"澳门共计{total}篇文章")
     data = get_content(data_process)
-    #mysql_writer('aomen_wj', data)
+    mysql_writer('aomen_wj', data)
 
 
 if __name__ == "__main__":

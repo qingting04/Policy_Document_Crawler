@@ -16,22 +16,22 @@ def initialize_undetected_driver():
     return driver
 
 
-def fetch_policy_data(policy, page_count):
+def fetch_policy_data(policy, page):
     data_unprocess = []
     driver = initialize_undetected_driver()
 
     try:
-        for page in range(1, page_count + 1):
+        for page_count in range(1, page + 1):
             url = (
                 f'https://searchapi.henan.gov.cn/open/api/external-new?keywords={policy}&siteId=4500000001&allKeyword='
-                f'&anyKeyword=&noKeyword=&searchRange=1&sortType=150&beginTime=&endTime=&pageNumber={page}&pageSize=15'
+                f'&anyKeyword=&noKeyword=&searchRange=1&sortType=150&beginTime=&endTime=&pageNumber={page_count}&pageSize=15'
                 f'&fileType=3&docType=0&pageNum=1'
             )
             driver.get(url)
             time.sleep(1)
             response = driver.find_element(By.TAG_NAME, "pre").text
             data_unprocess.append(json.loads(response))
-            print(f'爬取第{page}页js数据')
+            print(f'爬取第{page_count}页js数据')
     finally:
         driver.quit()
     return data_unprocess
@@ -65,11 +65,11 @@ def get_all(data_unprocess):
 def main(un_policy):
     policy = quote(un_policy)
     page_total_data = fetch_policy_data(policy, 1)[0]
-    page_count, total = get_pageandtotal(page_total_data)
-    print(f'河南共计{page_count}页,{total}篇文章')
-    unprocess_data = fetch_policy_data(policy, page_count)
+    page, total = get_pageandtotal(page_total_data)
+    print(f'河南共计{page}页,{total}篇文章')
+    unprocess_data = fetch_policy_data(policy, page)
     data = get_all(unprocess_data)
-    # mysql_writer(data, 'henan_wj')
+    mysql_writer('henan_wj', data)
 
 
 if __name__ == '__main__':

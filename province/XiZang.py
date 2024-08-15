@@ -1,9 +1,8 @@
-import math
 import re
 import time
 from urllib.parse import quote
 from selenium import webdriver
-import requests
+import json
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -14,42 +13,45 @@ from writer import mysql_writer
 
 def fetch_policy_data(policy, page):
     data_unprocess = []
+    driver = initialize_driver()
 
-    for page_count in range(1, page+1):
-        cur_url = (
-            f'https://search.i0898.com/hisearch/list/?size=10&sort=&keyword={policy}&page={page}&field=title'
-            f'&excludefield=&excludeKeyword=&department=&lawtype=&subject=&daterange=&filetype=&tsfl=&year='
-        )
-        response = requests.get(cur_url)
-        data_unprocess.append(response.json())
-        print(f'爬取第{page_count}页js数据')
-        time.sleep(0.1)
-
+    try:
+        for page_count in range(1, page + 1):
+            url = (
+                f"https://www.xizang.gov.cn/igs/front/search.jhtml?code=30e4960928e74a14a2c05439d100cfc0"
+                f"&pageNumber={page_count}&pageSize=10&searchWord={policy}&siteId=2&type=19"
+            )
+            driver.get(url)
+            time.sleep(1)
+            response = driver.find_element(By.TAG_NAME, "pre").text
+            data_unprocess.append(json.loads(response))
+            print(f'爬取第{page_count}页js数据')
+    finally:
+        driver.quit()
     return data_unprocess
 
 
 def get_pageandtotal(page_total_data):
-    total = page_total_data['data']['total']
-    return math.ceil(total/10), total
+    page = page_total_data['page']['totalPages']
+    total = page_total_data['page']['total']
+    return page, total
 
 
 def process_data(unprocess_data):
     processed_data = []
-    print('处理js数据')
     for un_data in unprocess_data:
-        for item in un_data['data']['data']:
+        for item in un_data['page']['content']:
             processed_item = {
                 'link': item.get('url', ''),
                 'title': re.sub('<[^<]+?>', '', item.get('title', '')),
-                'fileNum': item.get('number', ''),
-                'columnName': item.get('website', ''),
-                'classNames': item.get('subject', ''),
-                'createDate': item.get('pubtime', ''),
+                'fileNum': item.get('fileNum', ''),
+                'columnName': item.get('fbjg', item.get('trs_site', '')),
+                'classNames': '',
+                'createDate': re.search(r'\d{4}-\d{2}-\d{2}', item.get('trs_time', '')).group(),
                 'content': ''
             }
             processed_data.append(processed_item)
 
-    print('js数据处理完成')
     return processed_data
 
 
@@ -66,10 +68,8 @@ def initialize_driver():
 
 def get_content(data_process):
     driver = initialize_driver()
+
     print('开始爬取文章')
-    xpath = ("//*[contains(@class, 'TRS_UEDITOR trs_paper_default') or "
-             "contains(@class, 'con_cen line mar-t2') or "
-             "contains(@class, 'font')]")
 
     def retry_get(url):
         for attempt in range(3):
@@ -85,6 +85,7 @@ def get_content(data_process):
                 print(f"第{attempt + 1}次访问链接失败: {url}")
         return False
 
+    xpath = "//*[contains(@class, 'TRS_UEDITOR')]"
     try:
         count = 0
         for item in data_process:
@@ -96,6 +97,7 @@ def get_content(data_process):
             else:
                 print(f"跳过无法访问的链接: {item['link']}")
                 item['content'] = "无法访问页面"
+
             count += 1
             print(f'爬取第{count}篇文章')
 
@@ -110,11 +112,11 @@ def main(un_policy):
     policy = quote(un_policy)
     page_total_data = fetch_policy_data(policy, 1)[0]
     page, total = get_pageandtotal(page_total_data)
-    print(f"海南文章共计{page}页，{total}篇文章")
+    print(f"西藏文章共计{page}页，{total}篇文章")
     unprocess_data = fetch_policy_data(policy, page)
     data_process = process_data(unprocess_data)
     data = get_content(data_process)
-    mysql_writer('hainan_wj', data)
+    mysql_writer('xizang_wj', data)
 
 
 if __name__ == "__main__":

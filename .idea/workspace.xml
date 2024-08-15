@@ -5,16 +5,45 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c8c374b-06fd-4f96-89f9-0c90c75a4fb2" name="更改" comment="无">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/province/XiZang.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/demo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/AnHui.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/AnHui.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/AoMen.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/AoMen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/BeiJing.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/BeiJing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/ChongQing.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/ChongQing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/FuJian.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/FuJian.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/GanSu.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/GanSu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/GuangDong.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/GuangDong.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/GuangXi.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/GuangXi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/GuiZhou.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/GuiZhou.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/GuoWuYuan.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/GuoWuYuan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/HaiNan.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/HaiNan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/HeBei.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/HeBei.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/HeNan.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/HeNan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/HeiLongJiang.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/HeiLongJiang.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/HuBei.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/HuBei.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/HuNan.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/HuNan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/JiLin.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/JiLin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/JiangSu.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/JiangSu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/JiangXi.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/JiangXi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/LiaoNing.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/LiaoNing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/NeiMengGu.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/NeiMengGu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/NingXia.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/NingXia.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/QingHai.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/QingHai.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/ShanDong.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/ShanDong.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/ShanXi1.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/ShanXi1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/ShanXi2.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/ShanXi2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/ShangHai.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/ShangHai.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/SiChuan.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/SiChuan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/TianJin.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/TianJin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/XiZhang.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/XiangGang.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/XiangGang.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/XinJiang.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/XinJiang.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/province/YunNan.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/YunNan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/ZheJiang.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/ZheJiang.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/province/writer.py" beforeDir="false" afterPath="$PROJECT_DIR$/province/writer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,6 +72,9 @@
     &quot;accountId&quot;: &quot;3662ef6d-2e73-4e89-a105-cc4217bd4eee&quot;
   }
 }</component>
+  <component name="PerforceDirect.Settings">
+    <option name="CHARSET" value="无" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 1
@@ -55,60 +87,63 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.AnHui.executor&quot;: &quot;Run&quot;,
-    &quot;Python.AoMen.executor&quot;: &quot;Run&quot;,
-    &quot;Python.BeiJing.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ChongQing.executor&quot;: &quot;Run&quot;,
-    &quot;Python.FuJian.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.GanSu.executor&quot;: &quot;Run&quot;,
-    &quot;Python.GuangDong.executor&quot;: &quot;Run&quot;,
-    &quot;Python.GuangXi.executor&quot;: &quot;Run&quot;,
-    &quot;Python.GuiZhou.executor&quot;: &quot;Run&quot;,
-    &quot;Python.GuoWuYuan.executor&quot;: &quot;Run&quot;,
-    &quot;Python.HaiNan.executor&quot;: &quot;Run&quot;,
-    &quot;Python.HeBei.executor&quot;: &quot;Run&quot;,
-    &quot;Python.HeNan.executor&quot;: &quot;Run&quot;,
-    &quot;Python.HeiLongJiang.executor&quot;: &quot;Run&quot;,
-    &quot;Python.HuBei.executor&quot;: &quot;Run&quot;,
-    &quot;Python.HuNan.executor&quot;: &quot;Run&quot;,
-    &quot;Python.JiLin.executor&quot;: &quot;Run&quot;,
-    &quot;Python.JiangSu.executor&quot;: &quot;Run&quot;,
-    &quot;Python.JiangXi.executor&quot;: &quot;Run&quot;,
-    &quot;Python.LiaoNing.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.NeiMengGu.executor&quot;: &quot;Run&quot;,
-    &quot;Python.NingXia.executor&quot;: &quot;Run&quot;,
-    &quot;Python.QingHai.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ShanDong.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ShanXi1.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ShanXi2.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ShangHai.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.SiChuan.executor&quot;: &quot;Run&quot;,
-    &quot;Python.TianJin.executor&quot;: &quot;Run&quot;,
-    &quot;Python.YunNan.executor&quot;: &quot;Run&quot;,
-    &quot;Python.demo.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.writer.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Code-Compile/Project/Python/Policy_crawler&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.AnHui.executor": "Run",
+    "Python.AoMen.executor": "Run",
+    "Python.BeiJing.executor": "Run",
+    "Python.ChongQing.executor": "Run",
+    "Python.FuJian.executor": "Debug",
+    "Python.GanSu.executor": "Run",
+    "Python.GuangDong.executor": "Run",
+    "Python.GuangXi.executor": "Run",
+    "Python.GuiZhou.executor": "Run",
+    "Python.GuoWuYuan.executor": "Run",
+    "Python.HaiNan.executor": "Run",
+    "Python.HeBei.executor": "Run",
+    "Python.HeNan.executor": "Run",
+    "Python.HeiLongJiang.executor": "Run",
+    "Python.HuBei.executor": "Run",
+    "Python.HuNan.executor": "Run",
+    "Python.JiLin.executor": "Run",
+    "Python.JiangSu.executor": "Run",
+    "Python.JiangXi.executor": "Run",
+    "Python.LiaoNing.executor": "Debug",
+    "Python.NeiMengGu.executor": "Run",
+    "Python.NingXia.executor": "Run",
+    "Python.QingHai.executor": "Run",
+    "Python.ShanDong.executor": "Run",
+    "Python.ShanXi1.executor": "Run",
+    "Python.ShanXi2.executor": "Run",
+    "Python.ShangHai.executor": "Debug",
+    "Python.SiChuan.executor": "Run",
+    "Python.TianJin.executor": "Run",
+    "Python.XiZang.executor": "Run",
+    "Python.XinJiang.executor": "Run",
+    "Python.YunNan.executor": "Run",
+    "Python.ZheJiang.executor": "Run",
+    "Python.demo.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.writer.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "D:/Code-Compile/Project/Python/Policy_crawler",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql_aurora_aws&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql_aurora_aws"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Policy_Document_Crawler" />
@@ -160,6 +195,7 @@
       <workItem from="1723635038119" duration="8956000" />
       <workItem from="1723644407054" duration="5088000" />
       <workItem from="1723649536695" duration="17000" />
+      <workItem from="1723715091578" duration="13041000" />
     </task>
     <task id="LOCAL-00001" summary="无">
       <option name="closed" value="true" />
@@ -225,7 +261,15 @@
       <option name="project" value="LOCAL" />
       <updated>1723294837298</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="无">
+      <option name="closed" value="true" />
+      <created>1723715124606</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1723715124606</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -258,11 +302,16 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Policy_Document_Crawler$demo.coverage" NAME="demo 覆盖结果" MODIFIED="1723647598704" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Policy_Document_Crawler$writer.coverage" NAME="writer 覆盖结果" MODIFIED="1723728174263" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/province" />
+    <SUITE FILE_PATH="coverage/Policy_Document_Crawler$demo.coverage" NAME="demo 覆盖结果" MODIFIED="1723721683978" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Policy_Document_Crawler$SiChuan.coverage" NAME="SiChuan 覆盖结果" MODIFIED="1723644533965" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/province" />
     <SUITE FILE_PATH="coverage/Policy_Document_Crawler$AoMen.coverage" NAME="AoMen 覆盖结果" MODIFIED="1723637600994" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/province" />
     <SUITE FILE_PATH="coverage/Policy_Document_Crawler$YunNan.coverage" NAME="YunNan 覆盖结果" MODIFIED="1723649000973" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/province" />
+    <SUITE FILE_PATH="coverage/Policy_Document_Crawler$XiZang.coverage" NAME="XiZang 覆盖结果" MODIFIED="1723722002018" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/province" />
+    <SUITE FILE_PATH="coverage/Policy_Document_Crawler$ZheJiang.coverage" NAME="ZheJiang 覆盖结果" MODIFIED="1723719806311" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/province" />
+    <SUITE FILE_PATH="coverage/Policy_Document_Crawler$XinJiang.coverage" NAME="XinJiang 覆盖结果" MODIFIED="1723724214977" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/province" />
     <SUITE FILE_PATH="coverage/Policy_Document_Crawler$LiaoNing.coverage" NAME="LiaoNing 覆盖结果" MODIFIED="1723639744485" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/province" />
     <SUITE FILE_PATH="coverage/Policy_Document_Crawler$ShanXi2.coverage" NAME="ShanXi2 覆盖结果" MODIFIED="1723642421348" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/province" />
+    <SUITE FILE_PATH="coverage/Policy_Document_Crawler$GuoWuYuan.coverage" NAME="GuoWuYuan 覆盖结果" MODIFIED="1723728219049" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/province" />
   </component>
 </project>

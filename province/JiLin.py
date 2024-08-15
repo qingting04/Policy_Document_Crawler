@@ -118,7 +118,7 @@ def main(policy):
     data_process, total = get_url(policy)
     print(f"吉林共计{total}篇文章")
     data = get_content(data_process)
-    #mysql_writer('jilin_wj', data)
+    mysql_writer('jilin_wj', data)
 
 
 if __name__ == "__main__":
