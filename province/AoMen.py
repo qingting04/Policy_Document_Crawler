@@ -1,3 +1,4 @@
+import time
 from urllib.parse import quote
 from opencc import OpenCC
 from selenium import webdriver
@@ -55,6 +56,7 @@ def get_url(policy):
                 }
                 process_data.append(record)
 
+            wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'page-item')))
             try:
                 driver.find_element(By.CLASS_NAME, 'page-item.disabled.d-none')
                 break
